@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public abstract class Storage {
+public abstract class Storage_Spec {
 
     /**
      *      KREIRANJE SKLADISTA
@@ -25,13 +25,19 @@ public abstract class Storage {
 
     protected String absolutePath;
     protected File config;
+    protected long size;
+    protected List<String> prohibitedExt;
 
-    public abstract void createStorage(String path) throws IOException;
-    public abstract void createStorage(String path, File config);
-    public abstract void createStorage(String path, int size);
-    public abstract void createStorage(String path, List<String> extensions);
-    public abstract void createStorage(String path, int size, List<String> extensions);
-    protected abstract void createConfig(String path, int size, List<String> extensions);
+    public abstract boolean createStorage() throws IOException;
+
+    public abstract boolean createStorage(String path) throws IOException;
+    //public abstract void createStorage(String path, File config); //???
+    public abstract boolean createStorage(String path, long size) throws IOException;
+    public abstract boolean createStorage(String path, List<String> extensions) throws IOException;
+    public abstract boolean createStorage(String path, long size, List<String> extensions) throws IOException;
+    protected abstract File createConfig(String path, long size, List<String> extensions) throws IOException;
+
+    protected abstract void updateConfig();
 
 
 
@@ -44,7 +50,6 @@ public abstract class Storage {
      *
      *      # sibling: '+'
      *          createD dir1[fileNum]+dir2+dir3 -> folderi su istog ranga
-     *
      *      # grouping: '(', ')'
      *          createD dir1[fileNum]>(dir2>dir3)+dir4>dir5
      *
@@ -88,6 +93,19 @@ public abstract class Storage {
     /**
      *      PRETRAZIVANJE SKLADISTA
      *
+     *      prolazenje kroz sve foldere i subfoldere i ispisivanje fajlova
+     *      public static void main(String... args) throws Exception {
+     *         Path dir = Paths.get("/path/to/dir");
+     *         Files.walk(dir).forEach(path -> showFile(path.toFile()));
+     *     }
+     *
+     *     public static void showFile(File file) {
+     *         if (file.isDirectory()) {
+     *             System.out.println("Directory: " + file.getAbsolutePath());
+     *         } else {
+     *             System.out.println("File: " + file.getAbsolutePath());
+     *         }
+     *     } prolazenje kroz sve foldere i subfoldere i ispisivanje fajlova
      *
      */
 
