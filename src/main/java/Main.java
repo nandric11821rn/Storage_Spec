@@ -1,9 +1,13 @@
+
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        long a = Long.MAX_VALUE;
+        /*long a = Long.MAX_VALUE;
         Local_Storage localStorage1 = new Local_Storage.Builder()
                 .withPath("C:\\Users\\andri\\Desktop\\SK_Project")
                 .withSize(10000000000L)
@@ -13,7 +17,11 @@ public class Main {
             System.out.println("\u001B[32mSUCCESSFULY CREATED STORAGE\n\u001B[37mLocation: " + localStorage1.getAbsolutePath()
                     + "\nSize: " + localStorage1.getSize() + "bytes"
                     + "\nProhibited extensions: " + localStorage1.getProhibitedExt());
-        }
+        }*/
+
+        Local_Storage localStorage = new Local_Storage();
+
+        localStorage.createStorage("C:\\Users\\andri\\Desktop\\SK_Project", 1000000, new ArrayList<>(Arrays.asList("png", "jpg")));
 
     }
 }

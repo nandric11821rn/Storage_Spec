@@ -26,6 +26,7 @@ public abstract class Storage_Spec {
     protected File config;
     protected long size;
     protected List<String> prohibitedExt;
+    protected List<Directory> directories;
 
     public abstract boolean createStorage() throws IOException;
 
@@ -34,9 +35,8 @@ public abstract class Storage_Spec {
     public abstract boolean createStorage(String path, long size) throws IOException;
     public abstract boolean createStorage(String path, List<String> extensions) throws IOException;
     public abstract boolean createStorage(String path, long size, List<String> extensions) throws IOException;
-    protected abstract File createConfig(String path, long size, List<String> extensions) throws IOException;
 
-    protected abstract void updateConfig();
+    protected abstract void updateConfig() throws IOException;
 
 
 
@@ -80,14 +80,14 @@ public abstract class Storage_Spec {
      *          fetchF dir1>file localPath
      */
 
-    public abstract void createDirectory(String path);
-    public abstract void createDirectory(String path, long fileNum);
-    public abstract void createDirectory(String path, List<String> directories);
-    public abstract void createDirectory(String path, Map<String, Integer> directories);
-    public abstract void createFile(String path);
-    public abstract void createFile(String path, List<String> names);
-    public abstract void delete(String path);
-    public abstract void renameTo(String path, String newName);
+    public abstract void createDirectory(String path) throws IOException;
+    public abstract void createDirectory(String path, long fileNum) throws IOException;
+    public abstract void createDirectory(String path, List<String> directories) throws IOException;
+    public abstract void createDirectory(String path, Map<String, Integer> directories) throws IOException;
+    public abstract void createFile(String path) throws IOException;
+    public abstract void createFile(String path, List<String> names) throws IOException;
+    public abstract void delete(String path) throws IOException;
+    public abstract void renameTo(String path, String newName) throws IOException;
 
     /**
      *      PRETRAZIVANJE SKLADISTA

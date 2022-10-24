@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,12 +16,14 @@ public class Local_Storage extends Storage_Spec {
         this.absolutePath = null;
         this.size = Long.MAX_VALUE;
         this.prohibitedExt = new ArrayList<>();
+        this.directories = new ArrayList<>();
     }
 
     public Local_Storage(Builder builder) {
         this.absolutePath = builder.absolutePath;
         this.size = builder.size;
         this.prohibitedExt = builder.prohibitedExt;
+        this.directories = new ArrayList<>();
     }
 
     public static class Builder {
@@ -84,66 +87,80 @@ public class Local_Storage extends Storage_Spec {
         }
 
         setAbsolutePath(path);
-        setConfig(createConfig(getAbsolutePath(), size, extensions));
+        setSize(size);
+        setProhibitedExt(extensions);
+
+        File config = new File(getAbsolutePath() + "\\config.json");
+        if (config.createNewFile()) {
+            setConfig(config);
+        }
+        updateConfig();
         return true;
     }
 
-    @Override
-    protected File createConfig(String path, long size, List<String> extensions) throws IOException {
-        File config = new File(path + "\\config.json");
-        boolean c = config.createNewFile();
-        //TODO: napuniti config
 
-        return config;
+
+
+
+    @Override
+    protected void updateConfig() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.writeValue(config, this);
     }
 
     @Override
-    protected void updateConfig() {
-        System.out.println(config.getName());
-    }
-
-    @Override
-    public void createDirectory(String path) {
-
+    public void createDirectory(String path) throws IOException {
+        //TODO: implementiranje metode
         updateConfig();
     }
 
     @Override
-    public void createDirectory(String path, long fileNum) {
-
+    public void createDirectory(String path, long fileNum) throws IOException {
+        //TODO: implementiranje metode
         updateConfig();
     }
 
     @Override
-    public void createDirectory(String path, List<String> directories) {
-
+    public void createDirectory(String path, List<String> directories) throws IOException {
+        //TODO: implementiranje metode
         updateConfig();
     }
 
     @Override
-    public void createDirectory(String path, Map<String, Integer> directories) {
-
+    public void createDirectory(String path, Map<String, Integer> directories) throws IOException {
+        //TODO: implementiranje metode
         updateConfig();
     }
 
     @Override
-    public void createFile(String path) {
-
+    public void createFile(String path) throws IOException {
+        //TODO: implementiranje metode
+        updateConfig();
     }
 
     @Override
-    public void createFile(String path, List<String> names) {
-
+    public void createFile(String path, List<String> names) throws IOException {
+        //TODO: implementiranje metode
+        updateConfig();
     }
 
     @Override
-    public void delete(String path) {
-
+    public void delete(String path) throws IOException{
+        //TODO: implementiranje metode
+        updateConfig();
     }
 
     @Override
-    public void renameTo(String path, String newName) {
-
+    public void renameTo(String path, String newName) throws IOException {
+        //TODO: implementiranje metode
+        updateConfig();
     }
 
+    @Override
+    public String toString() {
+        return "path: " + getAbsolutePath()
+                + "\nsize: " + getSize()
+                + "\nconfig: " + getConfig().getName()
+                + "\nprohibitedExt: " + getProhibitedExt();
+    }
 }

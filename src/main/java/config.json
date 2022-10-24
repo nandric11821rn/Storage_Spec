@@ -1,20 +1,37 @@
 {
-  "path" : "C:\\Users\\andri\\Desktop\\SK_Project",
-  "size" : "9223372036854775807L",
-  "prohibitedExt" : ["jpg", "png", "nef"],
+  "absolutePath": "C:\\Users\\andri\\Desktop\\SK_Project",
+  "size": "100000000L",
   "config" : "C:\\Users\\andri\\Desktop\\SK_Project\\config.json",
-
-  "directories" : [
+  "prohibitedExt": [
+    "jpg",
+    "png",
+    "nef"
+  ],
+  "directories": [
     {
-      "path" : "\\dir1",
-      "fileNumberLimit" : 15,
-      "files" : ["text.txt", "word.docx"]
+      "path": "\\dir1",
+      "fileNumberLimit": 10,
+      "files": [
+        "text.txt",
+        "word.docx",
+        "spisakStudenata.pdf"
+      ]
     },
-
     {
-      "path" : "\\dir1\\dir2",
-      "fileNumberLimit" : 15,
-      "files" : ["text.txt", "word.docx"]
+      "path": "\\dir1\\dir2",
+      "fileNumberLimit": 10,
+      "files": [
+        "text.txt",
+        "word.docx"
+      ]
+    },
+    {
+      "path": "\\dir1",
+      "fileNumberLimit": 10,
+      "files": [
+        "text.txt",
+        "word.docx"
+      ]
     }
   ]
 }
