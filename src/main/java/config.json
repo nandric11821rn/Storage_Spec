@@ -1,0 +1,20 @@
+{
+  "path" : "C:\\Users\\andri\\Desktop\\SK_Project",
+  "size" : "9223372036854775807L",
+  "prohibitedExt" : ["jpg", "png", "nef"],
+  "config" : "C:\\Users\\andri\\Desktop\\SK_Project\\config.json",
+
+  "directories" : [
+    {
+      "path" : "\\dir1",
+      "fileNumberLimit" : 15,
+      "files" : ["text.txt", "word.docx"]
+    },
+
+    {
+      "path" : "\\dir1\\dir2",
+      "fileNumberLimit" : 15,
+      "files" : ["text.txt", "word.docx"]
+    }
+  ]
+}

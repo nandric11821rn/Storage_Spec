@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
 @Getter
 @Setter
 public abstract class Storage_Spec {

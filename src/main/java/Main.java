@@ -3,6 +3,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        long a = Long.MAX_VALUE;
         Local_Storage localStorage1 = new Local_Storage.Builder()
                 .withPath("C:\\Users\\andri\\Desktop\\SK_Project")
                 .withSize(10000000000L)
