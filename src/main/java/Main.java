@@ -21,7 +21,10 @@ public class Main {
 
         Local_Storage localStorage = new Local_Storage();
 
-        localStorage.createStorage("C:\\Users\\andri\\Desktop\\SK_Project", 1000000, new ArrayList<>(Arrays.asList("png", "jpg")));
-
+        //localStorage.createStorage("C:\\a_test\\Pokusaj", 1000000, new ArrayList<>(Arrays.asList("png", "jpg")));
+        //localStorage.createDirectory("C:\\a_test\\Pokusaj\\prpica.jpg");
+        //localStorage.renameTo("C:\\a_test\\Pokusaj\\prpica.jpg", "papanovagvineja.jpg");
+        //localStorage.delete("C:\\a_test\\Pokusaj\\papanovagvineja.jpg");
+        //localStorage.createFile("C:\\a_test\\Pokusaj\\capture.png");
     }
 }

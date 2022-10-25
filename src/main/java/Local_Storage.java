@@ -5,6 +5,9 @@ import lombok.Setter;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +56,7 @@ public class Local_Storage extends Storage_Spec {
 
     private File getRootStorage(File[] files) {
         //TODO: funk treba da vrati skladiste ako postoji koje je roditelj!!!
+        //objasnices mi na diskordu
         return null;
     }
 
@@ -108,52 +112,126 @@ public class Local_Storage extends Storage_Spec {
         objectMapper.writeValue(config, this);
     }
 
+    //---------------------------------------------------------------for sub-files (not root)
+    //TODO: potrebno razumeti updateConfig i dopuniti
     @Override
     public void createDirectory(String path) throws IOException {
-        //TODO: implementiranje metode
-        updateConfig();
+
+        File f = new File(path);
+
+        if (!f.exists()){
+            f.mkdirs();
+            if(f.exists()) {
+                System.out.println("Dir created successfully");
+
+              //  setAbsolutePath(path);
+              //  updateConfig();
+            }
+            else
+                System.out.println("Dir creation failed");
+        }
+
     }
 
     @Override
     public void createDirectory(String path, long fileNum) throws IOException {
-        //TODO: implementiranje metode
-        updateConfig();
+
+        File f = new File(path);
+
+        if (!f.exists()){
+            f.mkdirs();
+            if(f.exists()) {
+                System.out.println("Dir created successfully");
+
+              //  setAbsolutePath(path);
+              //  setFileNum(fileNum);
+              //  updateConfig();
+            }
+            else
+                System.out.println("Dir creation failed");
+        }
     }
 
     @Override
-    public void createDirectory(String path, List<String> directories) throws IOException {
-        //TODO: implementiranje metode
-        updateConfig();
+    public void createDirectory(String path, List<Directory> directories) throws IOException {
+
+        File f = new File(path);
+
+        if (!f.exists()){
+            f.mkdirs();
+            if(f.exists()) {
+                System.out.println("Dir created successfully");
+
+              //  setAbsolutePath(path);
+              //  setDirectories(directories);
+              //  updateConfig();
+            }
+            else
+                System.out.println("Dir creation failed");
+        }
     }
 
     @Override
     public void createDirectory(String path, Map<String, Integer> directories) throws IOException {
-        //TODO: implementiranje metode
-        updateConfig();
+        //TODO: koja je poenta ove mape- nedovrseno
+        File f = new File(path);
+
+        if (!f.exists()){
+            f.mkdirs();
+            if(f.exists()) {
+                System.out.println("Dir created successfully");
+
+                //setAbsolutePath(path);
+                //setDirectories(directories);
+                //updateConfig();
+            }
+            else
+                System.out.println("Dir creation failed");
+        }
     }
 
     @Override
     public void createFile(String path) throws IOException {
-        //TODO: implementiranje metode
-        updateConfig();
+
+        File f = new File(path);
+        f.createNewFile();
+
+        //updateConfig();
     }
 
     @Override
     public void createFile(String path, List<String> names) throws IOException {
-        //TODO: implementiranje metode
-        updateConfig();
+        //TODO: names? ako hocemo u dubinu ili tako nesto, to cemo u test aplikaciji
+        //updateConfig();
     }
 
     @Override
     public void delete(String path) throws IOException{
-        //TODO: implementiranje metode
-        updateConfig();
+
+        File f = new File(path);
+
+        if (f.delete()) {
+            System.out.println("Deleted successfully");
+            //updateConfig();
+        }
+        else {
+            System.out.println("Failed to delete");
+        }
     }
 
     @Override
     public void renameTo(String path, String newName) throws IOException {
-        //TODO: implementiranje metode
-        updateConfig();
+
+        Path oldFile = Paths.get(path);
+        try{
+            Files.move(oldFile, oldFile.resolveSibling(newName));
+            System.out.println("File Successfully Renamed");
+
+            //updateConfig();
+        }
+        catch (IOException e) {
+            System.out.println("Rename attempt failed");
+        }
     }
 
     @Override

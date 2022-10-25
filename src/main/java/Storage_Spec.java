@@ -28,6 +28,8 @@ public abstract class Storage_Spec {
     protected List<String> prohibitedExt;
     protected List<Directory> directories;
 
+    protected long fileNum;
+
     public abstract boolean createStorage() throws IOException;
 
     public abstract boolean createStorage(String path) throws IOException;
@@ -82,7 +84,7 @@ public abstract class Storage_Spec {
 
     public abstract void createDirectory(String path) throws IOException;
     public abstract void createDirectory(String path, long fileNum) throws IOException;
-    public abstract void createDirectory(String path, List<String> directories) throws IOException;
+    public abstract void createDirectory(String path, List<Directory> directories) throws IOException;
     public abstract void createDirectory(String path, Map<String, Integer> directories) throws IOException;
     public abstract void createFile(String path) throws IOException;
     public abstract void createFile(String path, List<String> names) throws IOException;
