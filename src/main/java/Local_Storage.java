@@ -126,9 +126,9 @@ public class Local_Storage extends Storage_Spec {
 
     @Override
     public boolean createDirectory(String path, long fileNum) throws IOException {
-        File f = new File(path);
-        if (f.getParentFile().isDirectory() && f.mkdir()){
-            directories.add(new Directory(path, fileNum, null));
+        File f = new File(getAbsolutePath() + path);
+        if (f.mkdir()){
+            directories.add(new Directory(path, fileNum, new ArrayList<String>()));
             updateConfig();
             return true;
         }
@@ -137,18 +137,17 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public boolean createDirectory(String path, List<Directory> directories) throws IOException {
-        /**
-         * \\dir1
-         * \\dir2
-         * \\dir3\\dir4
-         */
+    public boolean createDirectory(List<Directory> directories) throws IOException {
         for (Directory d : directories) {
             File f = new File(getAbsolutePath() + d.getPath());
+            if (!f.mkdir()) {
+                return false;
+            }
             this.directories.add(d);
         }
 
-        return false;
+        updateConfig();
+        return true;
     }
 
     @Override
@@ -177,13 +176,27 @@ public class Local_Storage extends Storage_Spec {
 
         File f = new File(path);
         f.createNewFile();
+        /**
+         * C:\\Users\\andri\\Desktop\\SK_Project\\dir1\\text.txt
+         * C:\\Users\\andri\\Desktop\\SK_Project\\dir1\\dir2\\text.txt
+         * C:\\Users\\andri\\Desktop\\SK_Project\\dir3\\text.txt
+         * C:\\Users\\andri\\Desktop\\SK_Project\\dir1\\text.txt
+         * C:\\Users\\andri\\Desktop\\SK_Project\\dir1\\text.txt
+         */
 
         //updateConfig();
     }
 
     @Override
-    public void createFile(String path, List<String> names) throws IOException {
+    public boolean createFile(String path, List<String> names) throws IOException {
         //TODO: names? ako hocemo u dubinu ili tako nesto, to cemo u test aplikaciji
+        for (String name: names) {
+            File f = new File(getAbsolutePath() + name);
+            if (!f.createNewFile()) {
+                return false;
+            }
+        }
+        return true;
         //updateConfig();
     }
 

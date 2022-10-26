@@ -17,6 +17,6 @@ public class Directory {
     public Directory(String path, long fileNumberLimit, List<String> files) {
         this.path = path;
         this.fileNumberLimit = fileNumberLimit;
-        this.files = new ArrayList<>(files);
+        this.files = files;
     }
 }
