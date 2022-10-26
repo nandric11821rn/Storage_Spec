@@ -121,13 +121,13 @@ public class Local_Storage extends Storage_Spec {
 
     @Override
     public boolean createDirectory(String path) throws IOException {
-        return createDirectory(path, -1);
+        return createDirectory(path, getDefaultFileNum());
     }
 
     @Override
     public boolean createDirectory(String path, long fileNum) throws IOException {
-        File f = new File(getAbsolutePath() + path);
-        if (f.mkdir()){
+        File f = new File(path);
+        if (f.getParentFile().isDirectory() && f.mkdir()){
             directories.add(new Directory(path, fileNum, new ArrayList<String>()));
             updateConfig();
             return true;
@@ -137,17 +137,18 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public boolean createDirectory(List<Directory> directories) throws IOException {
+    public boolean createDirectory(String path, List<Directory> directories) throws IOException {
+        /**
+         * \\dir1
+         * \\dir2
+         * \\dir3\\dir4
+         */
         for (Directory d : directories) {
             File f = new File(getAbsolutePath() + d.getPath());
-            if (!f.mkdir()) {
-                return false;
-            }
             this.directories.add(d);
         }
 
-        updateConfig();
-        return true;
+        return false;
     }
 
     @Override
@@ -172,17 +173,34 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public void createFile(String path) throws IOException {
+    public boolean createFile(String path) throws IOException {
 
-        File f = new File(path);
-        f.createNewFile();
-        /**
-         * C:\\Users\\andri\\Desktop\\SK_Project\\dir1\\text.txt
-         * C:\\Users\\andri\\Desktop\\SK_Project\\dir1\\dir2\\text.txt
-         * C:\\Users\\andri\\Desktop\\SK_Project\\dir3\\text.txt
-         * C:\\Users\\andri\\Desktop\\SK_Project\\dir1\\text.txt
-         * C:\\Users\\andri\\Desktop\\SK_Project\\dir1\\text.txt
-         */
+        File f = new File(absolutePath + path);
+       // System.out.println("roditelj je: " + f.getParent() + "\n\n");
+       // System.out.println("absolute path to file:" + absolutePath + "+" + path);
+        for(Directory directory: directories){ //Trazimo roditelja pre nego sto napravimo fajl
+
+            String potentialParent = absolutePath + directory.getPath();
+            //System.out.println("da li isti: " + potentialParent.equals(f.getParent()));
+            //System.out.println("  fileNum: "+directory.getFileNumberLimit());
+
+            if(potentialParent.equals(f.getParent())){//TODO:ako roditelj, onda proveri koliko ima fajlova u sebi/ da li sme da se doda ovaj novi
+                //provere za skladiste:
+                if(!isPermittedExt(path)) return false;//ima li zabranjenu ekstenziju
+                if(!isEnoughSpace(f)) return false;//ima li dovoljno prostora
+                //provere za direktorijum:
+                if(directory.getFileNumberLimit() == directory.getFiles().size()) //ako ce da bude previse fajlova ako dodamo ovaj
+                    return false;
+            }
+        }
+
+        if(f.createNewFile()) {
+            //System.out.println("usao");
+            return true;
+        }
+        else{
+            return false;
+        }
 
         //updateConfig();
     }
@@ -201,31 +219,32 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public void delete(String path) throws IOException{
+    public boolean delete(String path) throws IOException{
 
         File f = new File(path);
 
         if (f.delete()) {
-            System.out.println("Deleted successfully");
+            //TODO: treba updatovati roditelja u config-u
             //updateConfig();
+            return true;
         }
         else {
-            System.out.println("Failed to delete");
+            return false;
         }
     }
 
     @Override
-    public void renameTo(String path, String newName) throws IOException {
+    public boolean renameTo(String path, String newName) throws IOException {
 
         Path oldFile = Paths.get(path);
         try{
             Files.move(oldFile, oldFile.resolveSibling(newName));
-            System.out.println("File Successfully Renamed");
-
+            //TODO: treba updatovati roditelja u config-u
             //updateConfig();
+            return true;
         }
         catch (IOException e) {
-            System.out.println("Rename attempt failed");
+            return false;
         }
     }
 

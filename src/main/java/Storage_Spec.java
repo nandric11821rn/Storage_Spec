@@ -3,6 +3,9 @@ import lombok.Setter;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 @Getter
@@ -27,6 +30,30 @@ public abstract class Storage_Spec {
     protected long size;
     protected List<String> prohibitedExt;
     protected List<Directory> directories;
+
+    protected long fileNum;
+    //--------------------------------------------defaults for directories:
+    private long defaultFileNum = 5;
+    //------------------------------------------------defaults for storage:
+    private long defaultSize = 10000000;
+    private List<String> defaultProhibitedExt = new ArrayList<>();
+    //---------------------------------------------------------------------
+
+    //...................................Storage checks:
+    public boolean isEnoughSpace(File f) throws IOException {
+        if((Files.size(Paths.get(absolutePath))+ f.length()) > size)//TODO: testiraj ovu proveru velicine u bajtovima
+            return false;
+        else
+            return true;
+    }
+    public boolean isPermittedExt(String path){//provera da li se poklapa sa zabranjenim ekstenzijama
+        for(String extention: prohibitedExt){
+            if(path.endsWith(extention))
+                return false;
+        }
+        return true;
+    }
+    //..................................................
 
 
     public abstract boolean createStorage() throws IOException;
@@ -83,12 +110,12 @@ public abstract class Storage_Spec {
 
     public abstract boolean createDirectory(String path) throws IOException;
     public abstract boolean createDirectory(String path, long fileNum) throws IOException;
-    public abstract boolean createDirectory(List<Directory> directories) throws IOException;
+    public abstract boolean createDirectory(String path, List<Directory> directories) throws IOException;
     public abstract boolean createDirectory(String path, Map<String, Integer> directories) throws IOException;
-    public abstract void createFile(String path) throws IOException;
+    public abstract boolean createFile(String path) throws IOException;
     public abstract boolean createFile(String path, List<String> names) throws IOException;
-    public abstract void delete(String path) throws IOException;
-    public abstract void renameTo(String path, String newName) throws IOException;
+    public abstract boolean delete(String path) throws IOException;
+    public abstract boolean renameTo(String path, String newName) throws IOException;
 
     /**
      *      PRETRAZIVANJE SKLADISTA
@@ -108,7 +135,6 @@ public abstract class Storage_Spec {
      *     } prolazenje kroz sve foldere i subfoldere i ispisivanje fajlova
      *
      */
-
 
 
 }

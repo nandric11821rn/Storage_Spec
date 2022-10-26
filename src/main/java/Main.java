@@ -28,7 +28,7 @@ public class Main {
         //localStorage.delete("C:\\a_test\\Pokusaj\\papanovagvineja.jpg");
         //localStorage.createFile("C:\\a_test\\Pokusaj\\capture.png");
 
-        if(localStorage.createStorage("C:\\Users\\andri\\Desktop\\SK_Project", 1000000, new ArrayList<>(Arrays.asList("png", "jpg")))) {
+       /* if(localStorage.createStorage("C:\\Users\\andri\\Desktop\\SK_Project", 1000000, new ArrayList<>(Arrays.asList("png", "jpg")))) {
             System.out.println("Napravljeno skladiste");
         }
 
@@ -40,10 +40,17 @@ public class Main {
 
         if(localStorage.createDirectory("\\dir1", 10)) {
             System.out.println("Napravljen direktorijum");
-        }
+        }*/
 
-        if (localStorage.createDirectory(directories)) {
+        /*if (localStorage.createDirectory(directories)) {
             System.out.println("Napravljeni direktorijumi");
-        }
+        }*/
+
+        //TODO: ne pravi se stvarno fajl ali se registruju u nizu direktorijuma
+        if(localStorage.createStorage("C:\\a_test\\Pokusaj1")) System.out.println("napravljen storage1 \n");
+        if(localStorage.createDirectory("\\Dir1", 10)) System.out.println("napravljen dir1 \n");
+        if(localStorage.createDirectory("\\Dir2", 5)) System.out.println("napravljen dir1 \n");
+        if(localStorage.createDirectory("\\Dir1\\Dir3", 53)) System.out.println("napravljen dir1 \n");
+        localStorage.createFile("\\Dir1\\Dir3\\proba.jpg");
     }
 }
