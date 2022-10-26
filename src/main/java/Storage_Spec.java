@@ -82,10 +82,10 @@ public abstract class Storage_Spec {
      *          fetchF dir1>file localPath
      */
 
-    public abstract void createDirectory(String path) throws IOException;
-    public abstract void createDirectory(String path, long fileNum) throws IOException;
-    public abstract void createDirectory(String path, List<Directory> directories) throws IOException;
-    public abstract void createDirectory(String path, Map<String, Integer> directories) throws IOException;
+    public abstract boolean createDirectory(String path) throws IOException;
+    public abstract boolean createDirectory(String path, long fileNum) throws IOException;
+    public abstract boolean createDirectory(String path, List<Directory> directories) throws IOException;
+    public abstract boolean createDirectory(String path, Map<String, Integer> directories) throws IOException;
     public abstract void createFile(String path) throws IOException;
     public abstract void createFile(String path, List<String> names) throws IOException;
     public abstract void delete(String path) throws IOException;

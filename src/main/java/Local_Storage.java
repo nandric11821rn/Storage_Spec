@@ -102,10 +102,6 @@ public class Local_Storage extends Storage_Spec {
         return true;
     }
 
-
-
-
-
     @Override
     protected void updateConfig() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -113,66 +109,50 @@ public class Local_Storage extends Storage_Spec {
     }
 
     //---------------------------------------------------------------for sub-files (not root)
-    //TODO: potrebno razumeti updateConfig i dopuniti
+
+    /**
+     * TODO: sta se desi ako je komanda createD dir>file.ext>dir2? mi resavamo gresku?
+     * da napravimo klasu ErrorHandler i prosledjujemo greske ili ispisujemo? - za Test_Projekat
+     * jer ce nam on parsirati komande sa konzole, ako je korisnik lose uneo komandu
+     * da uopste ni ne zove funkcije
+     *
+     *
+     */
+
     @Override
-    public void createDirectory(String path) throws IOException {
-
-        File f = new File(path);
-
-        if (!f.exists()){
-            f.mkdirs();
-            if(f.exists()) {
-                System.out.println("Dir created successfully");
-
-              //  setAbsolutePath(path);
-              //  updateConfig();
-            }
-            else
-                System.out.println("Dir creation failed");
-        }
-
+    public boolean createDirectory(String path) throws IOException {
+        return createDirectory(path, -1);
     }
 
     @Override
-    public void createDirectory(String path, long fileNum) throws IOException {
-
+    public boolean createDirectory(String path, long fileNum) throws IOException {
         File f = new File(path);
-
-        if (!f.exists()){
-            f.mkdirs();
-            if(f.exists()) {
-                System.out.println("Dir created successfully");
-
-              //  setAbsolutePath(path);
-              //  setFileNum(fileNum);
-              //  updateConfig();
-            }
-            else
-                System.out.println("Dir creation failed");
+        if (f.getParentFile().isDirectory() && f.mkdir()){
+            directories.add(new Directory(path, fileNum, null));
+            updateConfig();
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    public void createDirectory(String path, List<Directory> directories) throws IOException {
-
-        File f = new File(path);
-
-        if (!f.exists()){
-            f.mkdirs();
-            if(f.exists()) {
-                System.out.println("Dir created successfully");
-
-              //  setAbsolutePath(path);
-              //  setDirectories(directories);
-              //  updateConfig();
-            }
-            else
-                System.out.println("Dir creation failed");
+    public boolean createDirectory(String path, List<Directory> directories) throws IOException {
+        /**
+         * \\dir1
+         * \\dir2
+         * \\dir3\\dir4
+         */
+        for (Directory d : directories) {
+            File f = new File(getAbsolutePath() + d.getPath());
+            this.directories.add(d);
         }
+
+        return false;
     }
 
     @Override
-    public void createDirectory(String path, Map<String, Integer> directories) throws IOException {
+    public boolean createDirectory(String path, Map<String, Integer> directories) throws IOException {
         //TODO: koja je poenta ove mape- nedovrseno
         File f = new File(path);
 
@@ -188,6 +168,8 @@ public class Local_Storage extends Storage_Spec {
             else
                 System.out.println("Dir creation failed");
         }
+
+        return false;
     }
 
     @Override
