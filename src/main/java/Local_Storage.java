@@ -138,37 +138,50 @@ public class Local_Storage extends Storage_Spec {
         return false;
     }
 
+    public Directory findParentFromDirList(File f){//pronalazi roditeljski direktorijum iz liste direktorijuma ako postoji, inace null.
+        for(Directory directory: directories) {
+            String potentialParent = absolutePath + "\\" + directory.getName();
+           // System.out.println("da li isti: " + potentialParent.equals(f.getParent())+ " ("+ potentialParent +"=?"+f.getParent());
+            if(potentialParent.equals(f.getParent())){
+                Directory parent = new Directory();
+                parent = directory;
+                return parent;
+            }
+        }
+        return null;
+    }
+
     @Override
-    public boolean createFile(String path) throws IOException {
+    public boolean createFile(String path) throws IOException {//TODO: RADI SAMO ZA FAJLOVE (ne za direktorijume)
 
         File f = new File(absolutePath + path);
        // System.out.println("roditelj je: " + f.getParent() + "\n\n");
        // System.out.println("absolute path to file:" + absolutePath + "+" + path);
-        for(Directory directory: directories){ //Trazimo roditelja pre nego sto napravimo fajl
+        Directory parent = new Directory();
+        //System.out.println("\nf.getpath: "+f.getParent()+"\n");
+        if((parent = findParentFromDirList(f)) != null){
 
-            String potentialParent = absolutePath + directory.getName();
-            //System.out.println("da li isti: " + potentialParent.equals(f.getParent()));
-            //System.out.println("  fileNum: "+directory.getFileNumberLimit());
+            //--------------provere za skladiste:
+            if(!isPermittedExt(path)) return false;//ima li zabranjenu ekstenziju
+            if(!isEnoughSpace(f)) return false;//ima li dovoljno prostora
+            //-----------provere za direktorijum:
+            if(parent.getFileNumberLimit() == parent.getFiles().size()) //ako ce da bude previse fajlova ako dodamo ovaj
+                return false;
+        }else return false;
 
-            if(potentialParent.equals(f.getParent())){//TODO:ako roditelj, onda proveri koliko ima fajlova u sebi/ da li sme da se doda ovaj novi
-                //provere za skladiste:
-                if(!isPermittedExt(path)) return false;//ima li zabranjenu ekstenziju
-                if(!isEnoughSpace(f)) return false;//ima li dovoljno prostora
-                //provere za direktorijum:
-                if(directory.getFileNumberLimit() == directory.getFiles().size()) //ako ce da bude previse fajlova ako dodamo ovaj
-                    return false;
+        try {
+            if (f.createNewFile()) {
+                //System.out.println("\n\nparent: " + parent.toString());
+                parent.getFiles().add(path);
+                updateConfig();
+
+                return true;
+            } else {
+                return false;
             }
-        }
-
-        if(f.createNewFile()) {
-            //System.out.println("usao");
-            return true;
-        }
-        else{
+        } catch (IOException e) {
             return false;
         }
-
-        //updateConfig();
     }
 
     @Override
@@ -185,32 +198,41 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public boolean delete(String path) throws IOException{
-
-        File f = new File(path);
-
-        if (f.delete()) {
-            //TODO: treba updatovati roditelja u config-u
-            //updateConfig();
-            return true;
-        }
-        else {
-            return false;
-        }
+    public boolean delete(String path) throws IOException{//TODO: RADI SAMO ZA FAJLOVE (ne za direktorijume)
+        File f = new File(getAbsolutePath() + path);
+        Directory parent = new Directory();
+        if((parent = findParentFromDirList(f)) != null){
+            if (f.delete()) {
+                //System.out.println(directories);
+                parent.getFiles().remove(path);
+                //System.out.println(directories);
+                updateConfig();
+                return true;
+            }
+            else {
+                return false;
+            }
+        }else return false;
     }
 
     @Override
     public boolean renameTo(String path, String newName) throws IOException {
         Path oldFile = Paths.get(path);
-        try{
-            Files.move(oldFile, oldFile.resolveSibling(newName));
-            //TODO: treba updatovati roditelja u config-u
-            //updateConfig();
-            return true;
-        }
-        catch (IOException e) {
-            return false;
-        }
+        File f = new File(getAbsolutePath() + path);
+
+        Directory parent = new Directory();
+        if((parent = findParentFromDirList(f)) != null){
+            try{
+                Files.move(oldFile, oldFile.resolveSibling(newName));
+                parent.getFiles().remove(path);
+                parent.getFiles().add(newName); //TODO: NIJE ISPRAVNO> TREBA DA SE PATH(do root-a) DODA, NE SAMO IME
+                updateConfig();
+                return true;
+            }
+            catch (IOException e) {
+                return false;
+            }
+        }return false;
     }
 
     @Override

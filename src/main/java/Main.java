@@ -15,11 +15,13 @@ import java.util.stream.Stream;
 public class Main {
     public static void main(String[] args) throws IOException {
         Local_Storage localStorage = new Local_Storage();
-        localStorage.createStorage(Paths.get("C:\\Users\\andri\\Desktop\\SK_Project"));
+        localStorage.createStorage(Paths.get("C:\\a_test\\SK_Project"));
 
         localStorage.createDirectory("\\dir1");
         localStorage.createDirectory("\\dir2");
-
+        localStorage.createDirectory("\\dir2\\dir3");
+        localStorage.createFile("\\dir2\\gooef.jpg");
+        localStorage.delete("\\dir2\\gooef.jpg");
 
 
     }
