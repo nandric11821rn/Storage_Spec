@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -95,6 +92,7 @@ public class Local_Storage extends Storage_Spec {
 
     @Override
     public boolean createDirectory(String path, long fileNum) throws IOException {
+        if(absolutePath == null) return false; //stavio ovo da nam ne puca vise kada zaboravimo da izbrisemo
         File f = new File(getAbsolutePath().toString() + path.toString());
         if (f.mkdir()){
             Directory d = new Directory(Paths.get(getAbsolutePath() + path), fileNum, new ArrayList<>());
@@ -120,7 +118,6 @@ public class Local_Storage extends Storage_Spec {
 
     @Override
     public boolean createDirectory(String path, Map<String, Integer> directories) throws IOException {
-        //TODO: koja je poenta ove mape- nedovrseno
         File f = new File(path);
 
         if (!f.exists()){
@@ -137,25 +134,6 @@ public class Local_Storage extends Storage_Spec {
         }
 
         return false;
-    }
-
-    private Directory findParentFromDirList(File f){//pronalazi roditeljski direktorijum iz liste direktorijuma ako postoji, inace null.
-        for(Directory directory: directories) {
-            String potentialParent = absolutePath + "\\" + directory.getName();
-           // System.out.println("da li isti: " + potentialParent.equals(f.getParent())+ " ("+ potentialParent +"=?"+f.getParent());
-            if(potentialParent.equals(f.getParent())){
-                Directory parent = new Directory();
-                parent = directory;
-                return parent;
-            }
-        }
-        return null;
-    }
-
-    private String getNameFromPathString(String path){ //vraca ime fajla iz string-putanje
-        String[] arr = path.toString().split("\\\\");
-        String name = arr[arr.length-1];
-        return name;
     }
 
     @Override
@@ -192,16 +170,13 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public boolean createFile(String path, List<String> names) throws IOException {
-        //TODO: names? ako hocemo u dubinu ili tako nesto, to cemo u test aplikaciji
+    public boolean createFile(String path, List<String> names) throws IOException { //dodavanje vise fajlova u 1 direktorijum
         for (String name: names) {
-            File f = new File(getAbsolutePath() + name);
-            if (!f.createNewFile()) {
+            String p = path + "\\" + name;
+            if(!createFile(p))
                 return false;
-            }
         }
         return true;
-        //updateConfig();
     }
 
     @Override
@@ -286,6 +261,96 @@ public class Local_Storage extends Storage_Spec {
         }
     }
 
+    @Override
+    public boolean moveFile(String filePath, String goalDirectory) {
+        return false;
+    }
+
+    @Override
+    public boolean download(String path, String goalDirectory) {
+        return false;
+    }
+
+    //---------------------------------------------------------------pretrazivanje
+    /**
+     * //TODO: da napravimo novu klasu "ResultFile" i Enum za filtriranje i vracanje korisniku profiltrir. podataka o fajlovima
+     *  da se filtrira po enumima. podrazumevana filtracija je po imenu, za svaki uneti enum, dodace se ta vrednost u rezultat.
+     */
+    @Override
+    public List<Object> searchDirectory(String path) {
+        return null;
+    }
+
+    @Override
+    public List<Object> searchSubdirectories(String path) {
+        return null;
+    }
+
+    @Override
+    public List<Object> searchAll(String path) {
+        return null;
+    }
+
+    @Override
+    public List<Object> searchByExtension(String path) {
+        return null;
+    }
+
+    @Override
+    public List<Object> searchBySubstring(String path) {
+        return null;
+    }
+
+    @Override
+    public boolean isInDirectory(String name) {
+        return false;
+    }
+
+    @Override
+    public boolean isInDirectory(List<String> names) {
+        return false;
+    }
+
+    @Override
+    public Object fetchDirectory(String FileName) {
+        return null;
+    }
+
+    @Override
+    public List<Object> TouchedAfterInDirectory(Date date) {
+        return null;
+    }
+
+    @Override
+    public List<Object> FilterResults(List<Enum> Criteria) {
+        return null;
+    }
+//--------------------------------------------------------------------------------Helpful:
+    private Directory findParentFromDirList(File f){//pronalazi roditeljski direktorijum iz liste direktorijuma ako postoji, inace null.
+        for(Directory directory: directories) {
+            String potentialParent = absolutePath + "\\" + directory.getName();
+          // System.out.println("da li isti: " + potentialParent.equals(f.getParent())+ " ("+ potentialParent +"=?"+f.getParent());
+           if(potentialParent.equals(f.getParent())){
+               Directory parent = new Directory();
+                parent = directory;
+             return parent;
+           }
+        }
+        return null;
+    }
+
+    private String getNameFromPathString(String path){ //vraca ime fajla iz string-putanje
+        String[] arr = path.toString().split("\\\\");
+        String name = arr[arr.length-1];
+        return name;
+    }
+
+    public boolean isEnoughSpace(File f) throws IOException {
+        if((Files.size(absolutePath)+ f.length()) > size)
+            return false;
+        else
+            return true;
+    }
     @Override
     public String toString() {
         return "path: " + getAbsolutePath()

@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 @Getter
@@ -32,12 +33,6 @@ public abstract class Storage_Spec {
     protected List<String> prohibitedExt;
     protected List<Directory> directories;
 
-    public boolean isEnoughSpace(File f) throws IOException {
-        if((Files.size(absolutePath)+ f.length()) > size)//TODO: testiraj ovu proveru velicine u bajtovima
-            return false;
-        else
-            return true;
-    }
     public boolean isPermittedExt(String path){//provera da li se poklapa sa zabranjenim ekstenzijama
         for(String extention: prohibitedExt){
             if(path.endsWith(extention))
@@ -109,6 +104,8 @@ public abstract class Storage_Spec {
     public abstract boolean createFile(String path, List<String> names) throws IOException;
     public abstract boolean delete(String path) throws IOException;
     public abstract boolean renameTo(String path, String newName) throws IOException;
+    public abstract boolean moveFile(String filePath, String goalDirectory); //unutar skladista
+    public abstract boolean download(String path, String goalDirectory); //lokalno / izvan skladista
 
     /**
      *      PRETRAZIVANJE SKLADISTA
@@ -127,7 +124,19 @@ public abstract class Storage_Spec {
      *         }
      *     } prolazenje kroz sve foldere i subfoldere i ispisivanje fajlova
      *
-     */
+     *///TODO: vraca object jer jos ne znam da li se koristi isti object na guglu i lokalno
 
+    public abstract List<Object> searchDirectory(String path); //sve fajlove u zadatom direktorijumu
+    public abstract List<Object> searchSubdirectories(String path);//sve fajlove iz svih direktorijuma u nekom direktorijumu,
+    public abstract List<Object> searchAll(String path);//fajlove u zadatom direktorijumu i svim poddirektorijumima,
+    public abstract List<Object> searchByExtension(String path);//vrati fajlove sa određenom ekstenzijom,
+    public abstract List<Object> searchBySubstring(String path);//fajlove koji sadrže,počinju,završavaju nekim zadatim podstringom
+    public abstract boolean isInDirectory(String name);//da li određeni direktorijum sadrži fajl sa određenim imenom,
+    public abstract boolean isInDirectory(List<String> names);//-||-ili više fajlova sa zadatom listom imena
+    public abstract Object fetchDirectory(String FileName);//vratiti u kom folderu se nalazi fajl sa određenim zadatim imenom
 
+    //public abstract sort();//obezbediti zadavanje različitih kriterijuma sortiranja, npr po nazivu,datumu kreiranje/modifikacije, rastuće/opadajuće
+    public abstract List<Object> TouchedAfterInDirectory(Date date);//fajlove koji su kreirani/modifikovani u nekom periodu, u nekom dir
+    public abstract List<Object> FilterResults(List<Enum> Criteria); //omogućiti filtriranje podataka koji se prikazuju za fajlove rezultata
+    //TODO: ideja: inicijalno samo ime fajla, ako se doda kriterijum (buduci enum) i on ce se pridruziti. vratice se lista custom file objekata
 }
