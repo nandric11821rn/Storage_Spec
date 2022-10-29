@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -138,7 +139,7 @@ public class Local_Storage extends Storage_Spec {
         return false;
     }
 
-    public Directory findParentFromDirList(File f){//pronalazi roditeljski direktorijum iz liste direktorijuma ako postoji, inace null.
+    private Directory findParentFromDirList(File f){//pronalazi roditeljski direktorijum iz liste direktorijuma ako postoji, inace null.
         for(Directory directory: directories) {
             String potentialParent = absolutePath + "\\" + directory.getName();
            // System.out.println("da li isti: " + potentialParent.equals(f.getParent())+ " ("+ potentialParent +"=?"+f.getParent());
@@ -151,8 +152,14 @@ public class Local_Storage extends Storage_Spec {
         return null;
     }
 
+    private String getNameFromPathString(String path){ //vraca ime fajla iz string-putanje
+        String[] arr = path.toString().split("\\\\");
+        String name = arr[arr.length-1];
+        return name;
+    }
+
     @Override
-    public boolean createFile(String path) throws IOException {//TODO: RADI SAMO ZA FAJLOVE (ne za direktorijume)
+    public boolean createFile(String path) throws IOException {
 
         File f = new File(absolutePath + path);
        // System.out.println("roditelj je: " + f.getParent() + "\n\n");
@@ -172,7 +179,7 @@ public class Local_Storage extends Storage_Spec {
         try {
             if (f.createNewFile()) {
                 //System.out.println("\n\nparent: " + parent.toString());
-                parent.getFiles().add(path);
+                parent.getFiles().add(getNameFromPathString(path));
                 updateConfig();
 
                 return true;
@@ -198,13 +205,28 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public boolean delete(String path) throws IOException{//TODO: RADI SAMO ZA FAJLOVE (ne za direktorijume)
+    public boolean delete(String path) throws IOException{
         File f = new File(getAbsolutePath() + path);
+
+        if(f.isDirectory()){//ako je u pitanju direktorijum
+           // System.out.println("name of dir to delete: " + f.getName() );
+            for(Directory directory: directories) {
+                if(directory.getName().equals(f.getName())){
+                    if(f.delete()) {
+                        directories.remove(directory);
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            return false;
+        }
+        //ako je u pitanju obican fajl
         Directory parent = new Directory();
         if((parent = findParentFromDirList(f)) != null){
             if (f.delete()) {
                 //System.out.println(directories);
-                parent.getFiles().remove(path);
+                parent.getFiles().remove(getNameFromPathString(path));
                 //System.out.println(directories);
                 updateConfig();
                 return true;
@@ -217,22 +239,51 @@ public class Local_Storage extends Storage_Spec {
 
     @Override
     public boolean renameTo(String path, String newName) throws IOException {
-        Path oldFile = Paths.get(path);
         File f = new File(getAbsolutePath() + path);
 
-        Directory parent = new Directory();
-        if((parent = findParentFromDirList(f)) != null){
-            try{
-                Files.move(oldFile, oldFile.resolveSibling(newName));
-                parent.getFiles().remove(path);
-                parent.getFiles().add(newName); //TODO: NIJE ISPRAVNO> TREBA DA SE PATH(do root-a) DODA, NE SAMO IME
+        if(f.isDirectory()) { //preimenovanje direktorijuma (sve radi kako treba)
+            String s = getAbsolutePath().toString();
+            String[] arr = path.toString().split("\\\\");
+
+            for (int i = 0; i < arr.length - 1; i++) {
+                if (!arr[i].equals("")) {
+                    s = s + "\\" + arr[i];
+                }
+            }
+            s = s + "\\" + newName;
+            File rename = new File(s);
+
+            if (f.renameTo(rename)) { //updatovanje config-a
+                for(Directory directory: directories) {
+                    //System.out.println(directory.getPath().toString() + " =? " + f.getPath()+"\n");
+                    if(directory.getPath().toString().equals(f.getPath())){
+                        directory.setPath(Paths.get(s));
+                        directory.setName(newName);
+                        updateConfig();
+                        break;
+                    }
+                }
+                //System.out.println(directories);
+                return true;
+            }else
+                return false;
+        }else{ //preimenovanje fajlova
+            Directory parent = new Directory();
+            if((parent = findParentFromDirList(f)) != null){
+                Path old = Paths.get(getAbsolutePath() + path);
+                try {
+                    Files.move(old, old.resolveSibling(newName));
+                }catch (IOException e) {
+                    return false;
+                }
+                parent.getFiles().remove(getNameFromPathString(path));
+                parent.getFiles().add(newName);
                 updateConfig();
+                //System.out.println(directories);
                 return true;
             }
-            catch (IOException e) {
-                return false;
-            }
-        }return false;
+            return false;
+        }
     }
 
     @Override

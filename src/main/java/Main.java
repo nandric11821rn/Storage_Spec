@@ -21,7 +21,12 @@ public class Main {
         localStorage.createDirectory("\\dir2");
         localStorage.createDirectory("\\dir2\\dir3");
         localStorage.createFile("\\dir2\\gooef.jpg");
-        localStorage.delete("\\dir2\\gooef.jpg");
+        //localStorage.delete("\\dir2\\gooef.jpg");
+        //localStorage.delete("\\dir2\\dir3");
+       // localStorage.renameTo("\\dir2\\dir3","Wii7");
+        //localStorage.renameTo("\\dir2","Wii");
+        localStorage.renameTo("\\dir1","PP");
+        localStorage.renameTo("\\dir2\\gooef.jpg", "image.jpg");
 
 
     }
