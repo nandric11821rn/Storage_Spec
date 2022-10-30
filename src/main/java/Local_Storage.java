@@ -309,8 +309,15 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public boolean download(String path, String goalDirectory) {
-        return false;
+    public boolean download(String filepath, String goalAbsolutePath) {//kopiranje bez menjanja skladista
+        Path copyPath = null;
+        try {
+            copyPath = Files.move(Paths.get(getAbsolutePath()+filepath), Paths.get(goalAbsolutePath+"\\"+getNameFromPathString(filepath)), StandardCopyOption.ATOMIC_MOVE);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     //---------------------------------------------------------------pretrazivanje
