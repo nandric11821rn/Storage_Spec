@@ -25,8 +25,10 @@ public class Main {
         //localStorage.delete("\\dir2\\dir3");
        // localStorage.renameTo("\\dir2\\dir3","Wii7");
         //localStorage.renameTo("\\dir2","Wii");
-        localStorage.renameTo("\\dir1","PP");
-        localStorage.renameTo("\\dir2\\gooef.jpg", "image.jpg");
+        //localStorage.renameTo("\\dir1","PP");
+        //localStorage.renameTo("\\dir2\\gooef.jpg", "image.jpg");
+        if(localStorage.moveFile("\\dir2\\gooef.jpg", "\\dir1")) System.out.println("all good dir");
+        //localStorage.moveFile("\\dir2\\gooef.jpg","\\dir1");
 
 
     }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -186,9 +187,10 @@ public class Local_Storage extends Storage_Spec {
         if(f.isDirectory()){//ako je u pitanju direktorijum
            // System.out.println("name of dir to delete: " + f.getName() );
             for(Directory directory: directories) {
-                if(directory.getName().equals(f.getName())){
+                if(directory.getPath().toString().equals(f.getPath())){
                     if(f.delete()) {
                         directories.remove(directory);
+                        updateConfig();
                         return true;
                     }
                     return false;
@@ -260,9 +262,49 @@ public class Local_Storage extends Storage_Spec {
             return false;
         }
     }
-
+    // goaldirectory je samo putanja (od korenskog fajla) do direkorijuma u koji se premesta (u istom skladistu)
     @Override
-    public boolean moveFile(String filePath, String goalDirectory) {
+    public boolean moveFile(String filePath, String goalDirectory) throws IOException {
+        File old = new File(getAbsolutePath() + filePath);
+        if(old.isDirectory()){
+            for(Directory directory: directories) {
+                //System.out.println(directory.getPath().toString()+" =? "+old.getPath().toString()+"\n");
+                if(directory.getPath().toString().equals(old.getPath().toString())){
+                    Path newPath = null;
+                    try {
+                       newPath = Files.move(Paths.get(getAbsolutePath()+filePath), Paths.get(getAbsolutePath()+goalDirectory+"\\"+getNameFromPathString(filePath)), StandardCopyOption.ATOMIC_MOVE);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                    if(newPath != null) {
+                        directory.setPath(newPath);
+                        updateConfig();
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        }else{
+            Directory parent = new Directory();
+            if((parent = findParentFromDirList(old)) != null){ //treba da se izbrise iz fajlova starog roditelja
+                Path newPath = null;
+                try {
+                    newPath = Files.move(Paths.get(getAbsolutePath()+filePath), Paths.get(getAbsolutePath()+goalDirectory+"\\"+getNameFromPathString(filePath)), StandardCopyOption.ATOMIC_MOVE);
+                }catch (IOException e){
+                    return false;
+                }
+                parent.getFiles().remove(getNameFromPathString(filePath));
+
+                for(Directory directory: directories) {//pa da se upise u listu fajlova novog roditelja
+                    if(directory.getPath().toString().equals(getAbsolutePath()+goalDirectory)){
+                        directory.getFiles().add(getNameFromPathString(filePath));
+                        updateConfig();
+                    }
+                }
+                return true;
+            }
+        }
         return false;
     }
 

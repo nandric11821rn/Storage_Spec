@@ -104,7 +104,7 @@ public abstract class Storage_Spec {
     public abstract boolean createFile(String path, List<String> names) throws IOException;
     public abstract boolean delete(String path) throws IOException;
     public abstract boolean renameTo(String path, String newName) throws IOException;
-    public abstract boolean moveFile(String filePath, String goalDirectory); //unutar skladista
+    public abstract boolean moveFile(String filePath, String goalDirectory) throws IOException; //unutar skladista
     public abstract boolean download(String path, String goalDirectory); //lokalno / izvan skladista
 
     /**
