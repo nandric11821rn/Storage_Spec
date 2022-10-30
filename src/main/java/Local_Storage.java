@@ -309,7 +309,7 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public boolean download(String filepath, String goalAbsolutePath) {//kopiranje bez menjanja skladista
+    public boolean download(String filepath, String goalAbsolutePath) {//kopiranje izvan skladista bez menjanja skladista
         Path copyPath = null;
         try {
             copyPath = Files.move(Paths.get(getAbsolutePath()+filepath), Paths.get(goalAbsolutePath+"\\"+getNameFromPathString(filepath)), StandardCopyOption.ATOMIC_MOVE);
@@ -326,27 +326,33 @@ public class Local_Storage extends Storage_Spec {
      *  da se filtrira po enumima. podrazumevana filtracija je po imenu, za svaki uneti enum, dodace se ta vrednost u rezultat.
      */
     @Override
-    public List<Object> searchDirectory(String path) {
+    public List<FileInfo> searchDirectory(String path) throws IOException {
+        File dir = new File(getAbsolutePath() + path);
+        File[] fileList = dir.listFiles();
+        ArrayList<FileInfo> abtFiles = new ArrayList<>();
+        for(File file : fileList) {
+            abtFiles.add(new FileInfo(file, getRootPathFromAbsolute(Paths.get(file.getAbsolutePath()))));
+        }
+        return abtFiles;
+    }
+
+    @Override
+    public List<FileInfo> searchSubdirectories(String path) {
         return null;
     }
 
     @Override
-    public List<Object> searchSubdirectories(String path) {
+    public List<FileInfo> searchAll(String path) {
         return null;
     }
 
     @Override
-    public List<Object> searchAll(String path) {
+    public List<FileInfo> searchByExtension(String path) {
         return null;
     }
 
     @Override
-    public List<Object> searchByExtension(String path) {
-        return null;
-    }
-
-    @Override
-    public List<Object> searchBySubstring(String path) {
+    public List<FileInfo> searchBySubstring(String path) {
         return null;
     }
 
@@ -361,20 +367,24 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public Object fetchDirectory(String FileName) {
+    public FileInfo fetchDirectory(String FileName) {
         return null;
     }
 
     @Override
-    public List<Object> TouchedAfterInDirectory(Date date) {
+    public List<FileInfo> TouchedAfterInDirectory(Date date) {
         return null;
     }
 
     @Override
-    public List<Object> FilterResults(List<Enum> Criteria) {
+    public List<FileInfo> FilterResultSet(List<Enum> Criteria, List<FileInfo> fileList) {
         return null;
     }
 //--------------------------------------------------------------------------------Helpful:
+    private String getRootPathFromAbsolute(Path path){//treba da vrati
+        String s = path.toString();
+        return s.substring(getAbsolutePath().toString().length());
+    }
     private Directory findParentFromDirList(File f){//pronalazi roditeljski direktorijum iz liste direktorijuma ako postoji, inace null.
         for(Directory directory: directories) {
             String potentialParent = absolutePath + "\\" + directory.getName();

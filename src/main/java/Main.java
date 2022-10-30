@@ -20,7 +20,8 @@ public class Main {
         localStorage.createDirectory("\\dir1");
         localStorage.createDirectory("\\dir2");
         localStorage.createDirectory("\\dir2\\dir3");
-        localStorage.createFile("\\dir2\\gooef.jpg");
+        localStorage.createDirectory("\\dir2\\tekst.txt");
+        localStorage.createFile("\\dir2\\slika.jpg");
         //localStorage.delete("\\dir2\\gooef.jpg");
         //localStorage.delete("\\dir2\\dir3");
        // localStorage.renameTo("\\dir2\\dir3","Wii7");
@@ -29,7 +30,8 @@ public class Main {
         //localStorage.renameTo("\\dir2\\gooef.jpg", "image.jpg");
         //if(localStorage.moveFile("\\dir2\\gooef.jpg", "\\dir1")) System.out.println("all good dir");
         //localStorage.moveFile("\\dir2\\gooef.jpg","\\dir1");
-        if(localStorage.download("\\dir2", "C:\\a_copyTest")) System.out.println("all good bro");
+        //if(localStorage.download("\\dir2", "C:\\a_copyTest")) System.out.println("all good bro");
+        System.out.println(localStorage.searchDirectory("\\dir2"));
 
     }
 }
