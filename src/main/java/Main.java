@@ -25,6 +25,7 @@ public class Main {
         localStorage.createFile("\\dir2\\dir3\\tekaka.txt");
         localStorage.createDirectory("\\dir2\\dir3\\imhppy");
         localStorage.createFile("\\dir2\\dir3\\imhppy\\tekaka.txt");
+        localStorage.createFile("\\dir2\\dir3\\imhppy\\hpie.png");
 
         //localStorage.delete("\\dir2\\gooef.jpg");
         //localStorage.delete("\\dir2\\dir3");
@@ -35,7 +36,7 @@ public class Main {
         //if(localStorage.moveFile("\\dir2\\gooef.jpg", "\\dir1")) System.out.println("all good dir");
         //localStorage.moveFile("\\dir2\\gooef.jpg","\\dir1");
         //if(localStorage.download("\\dir2", "C:\\a_copyTest")) System.out.println("all good bro");
-        System.out.println(localStorage.searchSubdirectories("\\dir2"));
+        System.out.println(localStorage.searchAll("\\dir2"));
 
     }
 }

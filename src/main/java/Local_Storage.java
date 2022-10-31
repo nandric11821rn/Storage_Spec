@@ -338,7 +338,7 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public List<FileInfo> searchSubdirectories(String path) throws IOException {//fajlove u poddir-ovima koji su u prosledjenom
+    public List<FileInfo> searchSubdirectories(String path) throws IOException {//fajlove u poddir-ovima koji su u prosledjenom (samo 1 nivo)
         File dir = new File(getAbsolutePath() + path);
         File[] fileList = dir.listFiles();
         ArrayList<FileInfo> abtFiles = new ArrayList<>();
@@ -355,8 +355,19 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public List<FileInfo> searchAll(String path) {
-        return null;
+    public List<FileInfo> searchAll(String path) throws IOException { //fajlove iz dir-a i poddir-ova do najdubljeg nivoa
+        System.out.println("\n curr path: " + path);
+        File dir = new File(getAbsolutePath() + path);
+        File[] fileList = dir.listFiles();
+        ArrayList<FileInfo> abtFiles = new ArrayList<>();
+        for(File file : fileList){
+            System.out.println(file.getName());
+            if(!file.isDirectory())//ako nije dir, dodaj ga u niz
+                abtFiles.add(new FileInfo(file, getRootPathFromAbsolute(Paths.get(file.getAbsolutePath()))));
+            else//ako jeste, rekurzivan poziv da ide najdublje sto moze
+                abtFiles.addAll(searchAll(getRootPathFromAbsolute(Paths.get(file.getPath()))));
+        }
+        return abtFiles;
     }
 
     @Override
