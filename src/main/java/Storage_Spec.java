@@ -127,7 +127,7 @@ public abstract class Storage_Spec {
      *///TODO: vraca object jer jos ne znam da li se koristi isti object na guglu i lokalno
 
     public abstract List<FileInfo> searchDirectory(String path) throws IOException; //sve fajlove u zadatom direktorijumu
-    public abstract List<FileInfo> searchSubdirectories(String path);//sve fajlove iz svih direktorijuma u nekom direktorijumu,
+    public abstract List<FileInfo> searchSubdirectories(String path) throws IOException;//sve fajlove iz svih direktorijuma u nekom direktorijumu,
     public abstract List<FileInfo> searchAll(String path);//fajlove u zadatom direktorijumu i svim poddirektorijumima,
     public abstract List<FileInfo> searchByExtension(String path);//vrati fajlove sa određenom ekstenzijom,
     public abstract List<FileInfo> searchBySubstring(String path);//fajlove koji sadrže,počinju,završavaju nekim zadatim podstringom
@@ -139,4 +139,6 @@ public abstract class Storage_Spec {
     public abstract List<FileInfo> TouchedAfterInDirectory(Date date);//fajlove koji su kreirani/modifikovani u nekom periodu, u nekom dir
     public abstract List<FileInfo> FilterResultSet(List<Enum> Criteria, List<FileInfo> fileList); //omogućiti filtriranje podataka koji se prikazuju za fajlove rezultata
     //TODO: ideja: inicijalno samo ime fajla, ako se doda kriterijum (buduci enum) i on ce se pridruziti. vratice se lista custom file objekata
+    public abstract List<FileInfo> SortResultSet(List<FileInfo> fileList, List<Enum> Criteria, boolean descending);
+    //da sortira na osnovu kriterijuma (1+) koji mogu rastuce ili opadajuce (default rastuce)
 }

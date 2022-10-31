@@ -142,11 +142,11 @@ public class Local_Storage extends Storage_Spec {
 
         File f = new File(absolutePath + path);
        // System.out.println("roditelj je: " + f.getParent() + "\n\n");
-       // System.out.println("absolute path to file:" + absolutePath + "+" + path);
+        //System.out.println("\nabsolute path to file:" + absolutePath + "+" + path);
         Directory parent = new Directory();
         //System.out.println("\nf.getpath: "+f.getParent()+"\n");
+        //System.out.println("parent from dirlist: \n"+ findParentFromDirList(f) );
         if((parent = findParentFromDirList(f)) != null){
-
             //--------------provere za skladiste:
             if(!isPermittedExt(path)) return false;//ima li zabranjenu ekstenziju
             if(!isEnoughSpace(f)) return false;//ima li dovoljno prostora
@@ -157,9 +157,10 @@ public class Local_Storage extends Storage_Spec {
 
         try {
             if (f.createNewFile()) {
-                //System.out.println("\n\nparent: " + parent.toString());
+
                 parent.getFiles().add(getNameFromPathString(path));
                 updateConfig();
+                //System.out.println("\n\nparent: " + parent.toString());
 
                 return true;
             } else {
@@ -326,7 +327,7 @@ public class Local_Storage extends Storage_Spec {
      *  da se filtrira po enumima. podrazumevana filtracija je po imenu, za svaki uneti enum, dodace se ta vrednost u rezultat.
      */
     @Override
-    public List<FileInfo> searchDirectory(String path) throws IOException {
+    public List<FileInfo> searchDirectory(String path) throws IOException {//fajlove u direktorijumu
         File dir = new File(getAbsolutePath() + path);
         File[] fileList = dir.listFiles();
         ArrayList<FileInfo> abtFiles = new ArrayList<>();
@@ -337,8 +338,20 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public List<FileInfo> searchSubdirectories(String path) {
-        return null;
+    public List<FileInfo> searchSubdirectories(String path) throws IOException {//fajlove u poddir-ovima koji su u prosledjenom
+        File dir = new File(getAbsolutePath() + path);
+        File[] fileList = dir.listFiles();
+        ArrayList<FileInfo> abtFiles = new ArrayList<>();
+        for(File file : fileList){ //prolazak kroz fajlove u prosledjenom
+            if(file.isDirectory()){//ako je direktorijum, prodji kroz sve njegove faljove
+                File subDir = new File(file.getAbsolutePath());
+                File[] subFileList = subDir.listFiles();
+                for(File subFile : subFileList){
+                    abtFiles.add(new FileInfo(subFile, getRootPathFromAbsolute(Paths.get(subFile.getAbsolutePath()))));
+                }
+            }
+        }
+        return abtFiles;
     }
 
     @Override
@@ -380,19 +393,26 @@ public class Local_Storage extends Storage_Spec {
     public List<FileInfo> FilterResultSet(List<Enum> Criteria, List<FileInfo> fileList) {
         return null;
     }
-//--------------------------------------------------------------------------------Helpful:
+
+    @Override
+    public List<FileInfo> SortResultSet(List<FileInfo> fileList, List<Enum> Criteria, boolean descending) {
+        return null;
+    }
+
+    //--------------------------------------------------------------------------------Helpful:
     private String getRootPathFromAbsolute(Path path){//treba da vrati
         String s = path.toString();
         return s.substring(getAbsolutePath().toString().length());
     }
     private Directory findParentFromDirList(File f){//pronalazi roditeljski direktorijum iz liste direktorijuma ako postoji, inace null.
         for(Directory directory: directories) {
-            String potentialParent = absolutePath + "\\" + directory.getName();
-          // System.out.println("da li isti: " + potentialParent.equals(f.getParent())+ " ("+ potentialParent +"=?"+f.getParent());
+            String potentialParent = absolutePath + getRootPathFromAbsolute(directory.getPath());
+           //System.out.println("da li isti: " + potentialParent.equals(f.getParent())+ " ("+ potentialParent +" =? "+f.getParent());
            if(potentialParent.equals(f.getParent())){
-               Directory parent = new Directory();
+                Directory parent = new Directory();
                 parent = directory;
-             return parent;
+               //System.out.println("\n");
+                return parent;
            }
         }
         return null;
