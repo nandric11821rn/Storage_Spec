@@ -356,12 +356,12 @@ public class Local_Storage extends Storage_Spec {
 
     @Override
     public List<FileInfo> searchAll(String path) throws IOException { //fajlove iz dir-a i poddir-ova do najdubljeg nivoa
-        System.out.println("\n curr path: " + path);
+        //System.out.println("\n curr path: " + path);
         File dir = new File(getAbsolutePath() + path);
         File[] fileList = dir.listFiles();
         ArrayList<FileInfo> abtFiles = new ArrayList<>();
         for(File file : fileList){
-            System.out.println(file.getName());
+            //System.out.println(file.getName());
             if(!file.isDirectory())//ako nije dir, dodaj ga u niz
                 abtFiles.add(new FileInfo(file, getRootPathFromAbsolute(Paths.get(file.getAbsolutePath()))));
             else//ako jeste, rekurzivan poziv da ide najdublje sto moze
@@ -371,8 +371,18 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public List<FileInfo> searchByExtension(String path) {
-        return null;
+    public List<FileInfo> searchByExtension(String extension) throws IOException {
+        List<FileInfo> abtFiles = new ArrayList<>();
+        abtFiles = searchAll("");
+
+        ArrayList<FileInfo> resultSet = new ArrayList<>();
+
+        for(FileInfo f : abtFiles){
+            if(f.getName().endsWith(extension))
+                resultSet.add(f);
+        }
+
+        return resultSet;
     }
 
     @Override
