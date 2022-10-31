@@ -130,9 +130,9 @@ public abstract class Storage_Spec {
     public abstract List<FileInfo> searchSubdirectories(String path) throws IOException;//sve fajlove iz svih direktorijuma u nekom direktorijumu,
     public abstract List<FileInfo> searchAll(String path) throws IOException;//fajlove u zadatom direktorijumu i svim poddirektorijumima,
     public abstract List<FileInfo> searchByExtension(String extension) throws IOException;//vrati fajlove sa određenom ekstenzijom (u citavom skladistu)
-    public abstract List<FileInfo> searchBySubstring(String path);//fajlove koji sadrže,počinju,završavaju nekim zadatim podstringom
-    public abstract boolean isInDirectory(String name);//da li određeni direktorijum sadrži fajl sa određenim imenom,
-    public abstract boolean isInDirectory(List<String> names);//-||-ili više fajlova sa zadatom listom imena
+    public abstract List<FileInfo> searchBySubstring(String substring) throws IOException;//fajlove koji sadrže,počinju,završavaju nekim zadatim podstringom
+    public abstract boolean isInDirectory(String path, String name) throws IOException;//da li određeni direktorijum sadrži fajl sa određenim imenom,
+    public abstract boolean isInDirectory(String path, List<String> names) throws IOException;//-||-ili više fajlova sa zadatom listom imena
     public abstract FileInfo fetchDirectory(String FileName);//vratiti u kom folderu se nalazi fajl sa određenim zadatim imenom
 
     //public abstract sort();//obezbediti zadavanje različitih kriterijuma sortiranja, npr po nazivu,datumu kreiranje/modifikacije, rastuće/opadajuće

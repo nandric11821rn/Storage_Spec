@@ -36,7 +36,11 @@ public class Main {
         //if(localStorage.moveFile("\\dir2\\gooef.jpg", "\\dir1")) System.out.println("all good dir");
         //localStorage.moveFile("\\dir2\\gooef.jpg","\\dir1");
         //if(localStorage.download("\\dir2", "C:\\a_copyTest")) System.out.println("all good bro");
-        System.out.println(localStorage.searchByExtension(".txt"));
+        List<String> s = new ArrayList<>();
+        s.add("tekst.txt");
+        s.add("dir");
+        s.add("slika.png");
+        System.out.println(localStorage.isInDirectory("\\dir2", s));
 
     }
 }

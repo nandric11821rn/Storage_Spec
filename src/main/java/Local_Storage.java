@@ -381,23 +381,43 @@ public class Local_Storage extends Storage_Spec {
             if(f.getName().endsWith(extension))
                 resultSet.add(f);
         }
-
         return resultSet;
     }
 
     @Override
-    public List<FileInfo> searchBySubstring(String path) {
-        return null;
+    public List<FileInfo> searchBySubstring(String substring) throws IOException { //sve fajlove koji sadrze substr
+        List<FileInfo> abtFiles = new ArrayList<>();
+        abtFiles = searchAll("");
+
+        ArrayList<FileInfo> resultSet = new ArrayList<>();
+
+        for(FileInfo f : abtFiles){
+            if(f.getName().contains(substring))
+                resultSet.add(f);
+        }
+        return resultSet;
     }
 
     @Override
-    public boolean isInDirectory(String name) {
+    public boolean isInDirectory(String path, String name) throws IOException { //da l postoji file sa imenom u zadatom direktorijumu
+        List<FileInfo> abtFiles = new ArrayList<>();
+        abtFiles = searchDirectory(path); //svi fajlovi unutar unetog direktorijuma
+
+        for(FileInfo f : abtFiles){
+            if(f.getName().equals(name))
+                return true;
+        }
         return false;
     }
 
     @Override
-    public boolean isInDirectory(List<String> names) {
-        return false;
+    public boolean isInDirectory(String path, List<String> names) throws IOException { // -||- fajlovi sa imenima u z. direktorijumu
+        ArrayList<String> fnames = (ArrayList<String>) names;
+        for(int i = 0; i < fnames.size(); i++){
+            if(!isInDirectory(path, fnames.get(i)))
+                return false;
+        }
+        return true;
     }
 
     @Override
