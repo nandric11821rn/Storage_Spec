@@ -36,11 +36,12 @@ public class Main {
         //if(localStorage.moveFile("\\dir2\\gooef.jpg", "\\dir1")) System.out.println("all good dir");
         //localStorage.moveFile("\\dir2\\gooef.jpg","\\dir1");
         //if(localStorage.download("\\dir2", "C:\\a_copyTest")) System.out.println("all good bro");
-        List<String> s = new ArrayList<>();
+        /*List<String> s = new ArrayList<>();
         s.add("tekst.txt");
         s.add("dir");
         s.add("slika.png");
-        System.out.println(localStorage.isInDirectory("\\dir2", s));
+        System.out.println(localStorage.isInDirectory("\\dir2", s));*/
+        System.out.println(localStorage.fetchDirectory("","hpie.png"));
 
     }
 }

@@ -420,8 +420,29 @@ public class Local_Storage extends Storage_Spec {
         return true;
     }
 
-    @Override
-    public FileInfo fetchDirectory(String FileName) {
+    @Override//korisnik treba da prosledi korenski direktorijum skladista // PRAZAN STRING TRBA D SE PROSLEDI
+    public FileInfo fetchDirectory(String emptyString, String fileName) throws IOException {//vraca direktorijum u kojem se nalazi zadati fajl (prvo pojavljivanje)
+        File dir = new File(getAbsolutePath() + emptyString);
+        File[] fileList = dir.listFiles();
+
+        FileInfo returnFile;
+
+        for(File f: fileList){
+            //System.out.println("\n"+ f.getName() + " =? " + fileName);
+            if(f.isDirectory()) {
+                if (f.getName().equals(fileName)){
+                    returnFile = new FileInfo(dir, getRootPathFromAbsolute(Paths.get(dir.getAbsolutePath())));
+                    return returnFile;
+                }
+                returnFile = fetchDirectory(getRootPathFromAbsolute(Paths.get(f.getAbsolutePath())), fileName);
+                if(returnFile != null)
+                    return returnFile;
+            }
+            if (f.getName().equals(fileName)) {
+                returnFile = new FileInfo(dir, getRootPathFromAbsolute(Paths.get(dir.getAbsolutePath())));
+                return returnFile;
+            }
+        }
         return null;
     }
 
