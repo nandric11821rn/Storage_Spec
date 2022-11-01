@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -136,7 +138,7 @@ public abstract class Storage_Spec {
     public abstract FileInfo fetchDirectory(String emptyString, String FileName) throws IOException;//vratiti u kom folderu se nalazi fajl sa određenim zadatim imenom
 
     //public abstract sort();//obezbediti zadavanje različitih kriterijuma sortiranja, npr po nazivu,datumu kreiranje/modifikacije, rastuće/opadajuće
-    public abstract List<FileInfo> TouchedAfterInDirectory(Date date);//fajlove koji su kreirani/modifikovani u nekom periodu, u nekom dir
+    public abstract List<FileInfo> TouchedAfterInDirectory(String path, LocalDateTime dateTime) throws IOException;//fajlove koji su kreirani/modifikovani u nekom periodu, u nekom dir
     public abstract List<FileInfo> FilterResultSet(List<Enum> Criteria, List<FileInfo> fileList); //omogućiti filtriranje podataka koji se prikazuju za fajlove rezultata
     //TODO: ideja: inicijalno samo ime fajla, ako se doda kriterijum (buduci enum) i on ce se pridruziti. vratice se lista custom file objekata
     public abstract List<FileInfo> SortResultSet(List<FileInfo> fileList, List<Enum> Criteria, boolean descending);

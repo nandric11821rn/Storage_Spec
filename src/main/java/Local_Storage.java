@@ -6,6 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -445,12 +448,24 @@ public class Local_Storage extends Storage_Spec {
         }
         return null;
     }
-
+//todo: touchedAfterInDirectory nije jos testirana metoda
     @Override
-    public List<FileInfo> TouchedAfterInDirectory(Date date) {
-        return null;
-    }
+    public List<FileInfo> TouchedAfterInDirectory(String path, LocalDateTime dateTime) throws IOException { //kreirani/modifikovani u periodu-posle zadatog vremena (samo 1 nivo od prosledjenog direktorijuma)
+        //ja cu samo modifikacije gledati jer ako napravljen fajl, i nije menjan, creationdate=modificationdate.
+        List<FileInfo> abtFiles = new ArrayList<>();
+        abtFiles = searchDirectory(path); //svi fajlovi unutar unetog direktorijuma
 
+        ArrayList<FileInfo> resultSet = new ArrayList<>();
+
+        for(FileInfo f : abtFiles){
+            LocalDateTime dt = LocalDateTime.ofInstant(f.getLastModifiedTime().toInstant(), ZoneId.systemDefault());
+            if(dt.isAfter(dateTime)){
+                resultSet.add(f);
+            }
+        }
+        return resultSet;
+    }
+//TODO:     naredne 2 metode da se naprave u specifikaciji, ne ovde.
     @Override
     public List<FileInfo> FilterResultSet(List<Enum> Criteria, List<FileInfo> fileList) {
         return null;
