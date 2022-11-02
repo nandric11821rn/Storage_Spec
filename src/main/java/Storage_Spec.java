@@ -8,10 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 @Getter
 @Setter
 public abstract class Storage_Spec {
@@ -162,6 +160,43 @@ public abstract class Storage_Spec {
         return fileList;
     }
     //TODO: ideja: inicijalno samo ime fajla, ako se doda kriterijum (buduci enum) i on ce se pridruziti. vratice se lista custom file objekata
-    public abstract List<FileInfo> SortResultSet(List<FileInfo> fileList, List<Enum> Criteria, boolean descending);
-    //da sortira na osnovu kriterijuma (1+) koji mogu rastuce ili opadajuce (default rastuce)
+    public List<FileInfo> sortResultSet(List<FileInfo> fileList, IncludeResult criteria, boolean descending){
+        switch (criteria){
+            case NAME:
+                return sortByName(fileList, true);
+            case SIZE:
+                break;
+            case MODIFICATION_DATE:
+                break;
+        }
+        return null;
+    }
+    //da sortira na osnovu kriterijuma rastuce ili opadajuce (default rastuce)
+    private List<FileInfo> sortByName(List<FileInfo> fileList, boolean descending){
+        FileInfo[] arr = new FileInfo[fileList.size()];
+        arr = fileList.toArray(arr);
+        Arrays.sort(arr, new Comparator<FileInfo>(){
+            @Override
+            public int compare(FileInfo fi1, FileInfo fi2) {
+                if(descending)
+                    return fi1.getName().compareTo(fi2.getName());
+                else
+                    return fi2.getName().compareTo(fi1.getName());
+            }
+        });
+
+        ArrayList<FileInfo> result = new ArrayList<>();
+        for(FileInfo fi : arr){
+            result.add(fi);
+        }
+        return result;
+    }
+    private List<FileInfo> sortByModDate(List<FileInfo> fileList, boolean descending){
+
+        return null;
+    }
+    private List<FileInfo> sortBySize(List<FileInfo> fileList, boolean descending){
+
+        return null;
+    }
 }

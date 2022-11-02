@@ -44,11 +44,12 @@ public class Main {
         //System.out.println(localStorage.fetchDirectory("","hpie.png"));
 
         List<IncludeResult> criteria = new ArrayList<>();
-        criteria.add(IncludeResult.ROOT_PATH);
+        criteria.add(IncludeResult.MODIFICATION_DATE);
         criteria.add(IncludeResult.SIZE);
 
         List<FileInfo> fi = localStorage.searchAll("");
-        System.out.println(localStorage.filterResultSet(criteria,fi));
+        fi = localStorage.filterResultSet(criteria,fi);
+        System.out.println(localStorage.sortResultSet(fi, IncludeResult.NAME,true));
 
 
     }

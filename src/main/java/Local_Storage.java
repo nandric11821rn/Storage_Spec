@@ -471,10 +471,10 @@ public class Local_Storage extends Storage_Spec {
      //   return null;
     //}
 
-    @Override
-    public List<FileInfo> SortResultSet(List<FileInfo> fileList, List<Enum> Criteria, boolean descending) {
-        return null;
-    }
+    //@Override
+    //public List<FileInfo> sortResultSet(List<FileInfo> fileList, IncludeResult Criteria, boolean descending) {
+    //    return null;
+    //}
 
     //--------------------------------------------------------------------------------Helpful:
     private String getRootPathFromAbsolute(Path path){//treba da vrati
