@@ -466,10 +466,10 @@ public class Local_Storage extends Storage_Spec {
         return resultSet;
     }
 //TODO:     naredne 2 metode da se naprave u specifikaciji, ne ovde.
-    @Override
-    public List<FileInfo> FilterResultSet(List<Enum> Criteria, List<FileInfo> fileList) {
-        return null;
-    }
+    //@Override
+    //public List<FileInfo> FilterResultSet(List<Enum> Criteria, List<FileInfo> fileList) {
+     //   return null;
+    //}
 
     @Override
     public List<FileInfo> SortResultSet(List<FileInfo> fileList, List<Enum> Criteria, boolean descending) {

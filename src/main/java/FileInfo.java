@@ -17,16 +17,16 @@ public class FileInfo {
     private Path absolutePath;
 
     private String pathFromRoot;
-    private boolean pathFlag = true;
+    private boolean pathFlag = false;
 
     private FileTime creationTime;
-    private boolean creationFlag = true;
+    private boolean creationFlag = false;
 
     private FileTime lastModifiedTime;
-    private boolean modifiedFlag = true;
+    private boolean modifiedFlag = false;
 
     private long size;
-    private boolean sizeFlag = true;
+    private boolean sizeFlag = false;
 
     //TODO: a flagovi da se u funkciji filter postave  (defaultno su false)
     public FileInfo(File file, String pathFromRoot) throws IOException {

@@ -139,7 +139,28 @@ public abstract class Storage_Spec {
 
     //public abstract sort();//obezbediti zadavanje različitih kriterijuma sortiranja, npr po nazivu,datumu kreiranje/modifikacije, rastuće/opadajuće
     public abstract List<FileInfo> TouchedAfterInDirectory(String path, LocalDateTime dateTime) throws IOException;//fajlove koji su kreirani/modifikovani u nekom periodu, u nekom dir
-    public abstract List<FileInfo> FilterResultSet(List<Enum> Criteria, List<FileInfo> fileList); //omogućiti filtriranje podataka koji se prikazuju za fajlove rezultata
+    public List<FileInfo> filterResultSet(List<IncludeResult> Criteria, List<FileInfo> fileList){//omogućiti filtriranje podataka koji se prikazuju za fajlove rezultata
+
+        for(IncludeResult c : Criteria){
+            for(FileInfo f : fileList){
+                switch (c){
+                    case SIZE:
+                        f.setSizeFlag(true);
+                        break;
+                    case ROOT_PATH:
+                        f.setPathFlag(true);
+                        break;
+                    case CREATION_DATE:
+                        f.setCreationFlag(true);
+                        break;
+                    case MODIFICATION_DATE:
+                        f.setModifiedFlag(true);
+                        break;
+                }
+            }
+        }
+        return fileList;
+    }
     //TODO: ideja: inicijalno samo ime fajla, ako se doda kriterijum (buduci enum) i on ce se pridruziti. vratice se lista custom file objekata
     public abstract List<FileInfo> SortResultSet(List<FileInfo> fileList, List<Enum> Criteria, boolean descending);
     //da sortira na osnovu kriterijuma (1+) koji mogu rastuce ili opadajuce (default rastuce)

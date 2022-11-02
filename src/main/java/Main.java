@@ -41,7 +41,15 @@ public class Main {
         s.add("dir");
         s.add("slika.png");
         System.out.println(localStorage.isInDirectory("\\dir2", s));*/
-        System.out.println(localStorage.fetchDirectory("","hpie.png"));
+        //System.out.println(localStorage.fetchDirectory("","hpie.png"));
+
+        List<IncludeResult> criteria = new ArrayList<>();
+        criteria.add(IncludeResult.ROOT_PATH);
+        criteria.add(IncludeResult.SIZE);
+
+        List<FileInfo> fi = localStorage.searchAll("");
+        System.out.println(localStorage.filterResultSet(criteria,fi));
+
 
     }
 }
