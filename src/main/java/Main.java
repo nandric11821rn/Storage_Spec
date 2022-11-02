@@ -20,12 +20,12 @@ public class Main {
         localStorage.createDirectory("\\dir1");
         localStorage.createDirectory("\\dir2");
         localStorage.createDirectory("\\dir2\\dir3");
-        localStorage.createFile("\\dir2\\tekst.txt");
-        localStorage.createFile("\\dir2\\slika.png");
-        localStorage.createFile("\\dir2\\dir3\\tekaka.txt");
+        localStorage.createFile("\\dir2\\atekst.txt");
+        localStorage.createFile("\\dir2\\sslika.png");
+        localStorage.createFile("\\dir2\\dir3\\ftekaka.txt");
         localStorage.createDirectory("\\dir2\\dir3\\imhppy");
-        localStorage.createFile("\\dir2\\dir3\\imhppy\\tekaka.txt");
-        localStorage.createFile("\\dir2\\dir3\\imhppy\\hpie.png");
+        localStorage.createFile("\\dir2\\dir3\\imhppy\\dtekaka.txt");
+        localStorage.createFile("\\dir2\\dir3\\imhppy\\ehpie.png");
 
         //localStorage.delete("\\dir2\\gooef.jpg");
         //localStorage.delete("\\dir2\\dir3");
@@ -49,7 +49,7 @@ public class Main {
 
         List<FileInfo> fi = localStorage.searchAll("");
         fi = localStorage.filterResultSet(criteria,fi);
-        System.out.println(localStorage.sortResultSet(fi, IncludeResult.NAME,true));
+        System.out.println(localStorage.sortResultSet(fi, IncludeResult.NAME,false));
 
 
     }

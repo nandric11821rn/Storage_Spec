@@ -137,6 +137,8 @@ public abstract class Storage_Spec {
 
     //public abstract sort();//obezbediti zadavanje različitih kriterijuma sortiranja, npr po nazivu,datumu kreiranje/modifikacije, rastuće/opadajuće
     public abstract List<FileInfo> TouchedAfterInDirectory(String path, LocalDateTime dateTime) throws IOException;//fajlove koji su kreirani/modifikovani u nekom periodu, u nekom dir
+
+    //---------------------------------------------------------------------Implemented in specification:
     public List<FileInfo> filterResultSet(List<IncludeResult> Criteria, List<FileInfo> fileList){//omogućiti filtriranje podataka koji se prikazuju za fajlove rezultata
 
         for(IncludeResult c : Criteria){
@@ -163,11 +165,11 @@ public abstract class Storage_Spec {
     public List<FileInfo> sortResultSet(List<FileInfo> fileList, IncludeResult criteria, boolean descending){
         switch (criteria){
             case NAME:
-                return sortByName(fileList, true);
+                return sortByName(fileList, descending);
             case SIZE:
-                break;
+                return sortBySize(fileList, descending);
             case MODIFICATION_DATE:
-                break;
+                return sortByModDate(fileList, descending);
         }
         return null;
     }
@@ -179,9 +181,9 @@ public abstract class Storage_Spec {
             @Override
             public int compare(FileInfo fi1, FileInfo fi2) {
                 if(descending)
-                    return fi1.getName().compareTo(fi2.getName());
-                else
                     return fi2.getName().compareTo(fi1.getName());
+                else
+                    return fi1.getName().compareTo(fi2.getName());
             }
         });
 
@@ -192,11 +194,56 @@ public abstract class Storage_Spec {
         return result;
     }
     private List<FileInfo> sortByModDate(List<FileInfo> fileList, boolean descending){
+        FileInfo[] arr = new FileInfo[fileList.size()];
+        arr = fileList.toArray(arr);
 
-        return null;
+        Arrays.sort(arr, new Comparator<FileInfo>(){
+            @Override
+            public int compare(FileInfo fi1, FileInfo fi2) {
+                if(descending) {
+                    return fi2.getLastModifiedTime().compareTo(fi1.getLastModifiedTime());
+                }else {
+                    return fi1.getLastModifiedTime().compareTo(fi2.getLastModifiedTime());
+                }
+            }
+        });
+
+        ArrayList<FileInfo> result = new ArrayList<>();
+        for(FileInfo fi : arr){
+            //System.out.println(fi.getLastModifiedTime().toMillis() + "  ->  " + fi.getName());
+            result.add(fi);
+        }
+        return result;
     }
     private List<FileInfo> sortBySize(List<FileInfo> fileList, boolean descending){
+        FileInfo[] arr = new FileInfo[fileList.size()];
+        arr = fileList.toArray(arr);
+        Arrays.sort(arr, new Comparator<FileInfo>(){
+            @Override
+            public int compare(FileInfo fi1, FileInfo fi2) {
+                if(descending) {
+                    //return (fi2.getSize()).compareTo(fi1.getSize());
+                    if(fi2.getSize() > fi1.getSize())
+                        return 1;
+                    if(fi1.getSize() > fi2.getSize())
+                        return -1;
+                    else
+                        return 0;
+                }else {
+                    if(fi1.getSize() > fi2.getSize())
+                        return 1;
+                    if(fi2.getSize() > fi1.getSize())
+                        return -1;
+                    else
+                        return 0;
+                }
+            }
+        });
 
-        return null;
+        ArrayList<FileInfo> result = new ArrayList<>();
+        for(FileInfo fi : arr){
+            result.add(fi);
+        }
+        return result;
     }
 }
