@@ -140,7 +140,7 @@ public abstract class Storage_Spec {
 
     //---------------------------------------------------------------------Implemented in specification:
     public List<FileInfo> filterResultSet(List<IncludeResult> Criteria, List<FileInfo> fileList){//omogućiti filtriranje podataka koji se prikazuju za fajlove rezultata
-
+        if(fileList == null) return null;
         for(IncludeResult c : Criteria){
             for(FileInfo f : fileList){
                 switch (c){
@@ -163,6 +163,7 @@ public abstract class Storage_Spec {
     }
     //TODO: ideja: inicijalno samo ime fajla, ako se doda kriterijum (buduci enum) i on ce se pridruziti. vratice se lista custom file objekata
     public List<FileInfo> sortResultSet(List<FileInfo> fileList, IncludeResult criteria, boolean descending){
+        if(fileList == null) return null;
         switch (criteria){
             case NAME:
                 return sortByName(fileList, descending);
@@ -170,8 +171,9 @@ public abstract class Storage_Spec {
                 return sortBySize(fileList, descending);
             case MODIFICATION_DATE:
                 return sortByModDate(fileList, descending);
+            default:
+                return fileList;
         }
-        return null;
     }
     //da sortira na osnovu kriterijuma rastuce ili opadajuce (default rastuce)
     private List<FileInfo> sortByName(List<FileInfo> fileList, boolean descending){

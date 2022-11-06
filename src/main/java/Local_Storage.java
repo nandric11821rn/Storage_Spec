@@ -332,6 +332,9 @@ public class Local_Storage extends Storage_Spec {
     @Override
     public List<FileInfo> searchDirectory(String path) throws IOException {//fajlove u direktorijumu
         File dir = new File(getAbsolutePath() + path);
+
+        if(!dir.exists() || !dir.isDirectory()) return null;
+
         File[] fileList = dir.listFiles();
         ArrayList<FileInfo> abtFiles = new ArrayList<>();
         for(File file : fileList) {
@@ -343,6 +346,9 @@ public class Local_Storage extends Storage_Spec {
     @Override
     public List<FileInfo> searchSubdirectories(String path) throws IOException {//fajlove u poddir-ovima koji su u prosledjenom (samo 1 nivo)
         File dir = new File(getAbsolutePath() + path);
+
+        if(!dir.exists() || !dir.isDirectory()) return null;
+
         File[] fileList = dir.listFiles();
         ArrayList<FileInfo> abtFiles = new ArrayList<>();
         for(File file : fileList){ //prolazak kroz fajlove u prosledjenom
@@ -361,6 +367,9 @@ public class Local_Storage extends Storage_Spec {
     public List<FileInfo> searchAll(String path) throws IOException { //fajlove iz dir-a i poddir-ova do najdubljeg nivoa
         //System.out.println("\n curr path: " + path);
         File dir = new File(getAbsolutePath() + path);
+
+        if(!dir.exists() || !dir.isDirectory()) return null;
+
         File[] fileList = dir.listFiles();
         ArrayList<FileInfo> abtFiles = new ArrayList<>();
         for(File file : fileList){
@@ -423,7 +432,7 @@ public class Local_Storage extends Storage_Spec {
         return true;
     }
 
-    @Override//korisnik treba da prosledi korenski direktorijum skladista // PRAZAN STRING TRBA D SE PROSLEDI
+    @Override//korisnik treba da prosledi korenski direktorijum skladista // PRAZAN STRING TREBA DA SE PROSLEDI
     public FileInfo fetchDirectory(String emptyString, String fileName) throws IOException {//vraca direktorijum u kojem se nalazi zadati fajl (prvo pojavljivanje)
         File dir = new File(getAbsolutePath() + emptyString);
         File[] fileList = dir.listFiles();
@@ -454,6 +463,7 @@ public class Local_Storage extends Storage_Spec {
         //ja cu samo modifikacije gledati jer ako napravljen fajl, i nije menjan, creationdate=modificationdate.
         List<FileInfo> abtFiles = new ArrayList<>();
         abtFiles = searchDirectory(path); //svi fajlovi unutar unetog direktorijuma
+        if(abtFiles == null) return null;
 
         ArrayList<FileInfo> resultSet = new ArrayList<>();
 
