@@ -17,6 +17,7 @@ import com.google.api.services.drive.model.FileList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Remote_Storage extends Storage_Spec{
@@ -272,5 +273,60 @@ public class Remote_Storage extends Storage_Spec{
     @Override
     public boolean renameTo(String path, String newName) throws IOException {
         return false;
+    }
+
+    @Override
+    public boolean moveFile(String filePath, String goalDirectory) throws IOException {
+        return false;
+    }
+
+    @Override
+    public boolean download(String filepath, String goalAbsolutePath) {
+        return false;
+    }
+
+    @Override
+    public List<FileInfo> searchDirectory(String path) throws IOException {
+        return null;
+    }
+
+    @Override
+    public List<FileInfo> searchSubdirectories(String path) throws IOException {
+        return null;
+    }
+
+    @Override
+    public List<FileInfo> searchAll(String path) throws IOException {
+        return null;
+    }
+
+    @Override
+    public List<FileInfo> searchByExtension(String extension) throws IOException {
+        return null;
+    }
+
+    @Override
+    public List<FileInfo> searchBySubstring(String substring) throws IOException {
+        return null;
+    }
+
+    @Override
+    public boolean isInDirectory(String path, String name) throws IOException {
+        return false;
+    }
+
+    @Override
+    public boolean isInDirectory(String path, List<String> names) throws IOException {
+        return false;
+    }
+
+    @Override
+    public FileInfo fetchDirectory(String emptyString, String FileName) throws IOException {
+        return null;
+    }
+
+    @Override
+    public List<FileInfo> TouchedAfterInDirectory(String path, LocalDateTime dateTime) throws IOException {
+        return null;
     }
 }

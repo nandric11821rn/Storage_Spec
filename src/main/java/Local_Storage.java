@@ -125,26 +125,6 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public boolean createDirectory(String path, Map<String, Integer> directories) throws IOException {
-        File f = new File(path);
-
-        if (!f.exists()){
-            f.mkdirs();
-            if(f.exists()) {
-                System.out.println("Dir created successfully");
-
-                //setAbsolutePath(path);
-                //setDirectories(directories);
-                //updateConfig();
-            }
-            else
-                System.out.println("Dir creation failed");
-        }
-
-        return false;
-    }
-
-    @Override
     public boolean createFile(String path) throws IOException {
 
         File f = new File(absolutePath + path);
@@ -536,6 +516,6 @@ public class Local_Storage extends Storage_Spec {
             result = walk.collect(Collectors.toList());
         }
         return result;
-
     }
+
 }
