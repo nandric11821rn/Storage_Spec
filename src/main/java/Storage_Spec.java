@@ -27,7 +27,7 @@ public abstract class Storage_Spec {
 
      */
 
-    protected Path absolutePath;
+    protected String absolutePath;
     protected File config;
     protected long size;
     protected List<String> prohibitedExt;
@@ -46,11 +46,11 @@ public abstract class Storage_Spec {
 
     public abstract boolean createStorage() throws IOException;
 
-    public abstract boolean createStorage(Path path) throws IOException;
+    public abstract boolean createStorage(String path) throws IOException;
     //public abstract void createStorage(String path, File config); //???
-    public abstract boolean createStorage(Path path, long size) throws IOException;
-    public abstract boolean createStorage(Path path, List<String> extensions) throws IOException;
-    public abstract boolean createStorage(Path path, long size, List<String> extensions) throws IOException;
+    public abstract boolean createStorage(String path, long size) throws IOException;
+    public abstract boolean createStorage(String path, List<String> extensions) throws IOException;
+    public abstract boolean createStorage(String path, long size, List<String> extensions) throws IOException;
 
     protected abstract void updateConfig() throws IOException;
 

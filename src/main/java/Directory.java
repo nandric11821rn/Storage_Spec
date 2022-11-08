@@ -11,17 +11,26 @@ import java.util.List;
 public class Directory {
 
     private String name;
-    private Path path;
+    private String path; // \\dir1\\dir2
     private long fileNumberLimit;
     private List<String> files;
 
-    public Directory(Path path, long fileNumberLimit, List<String> files) {
-        this.name = path.getFileName().toString();
+    public Directory(String path, long fileNumberLimit, List<String> files) {
+        this.name = getName(path);
         this.path = path;
         this.fileNumberLimit = fileNumberLimit;
         this.files = files;
     }
 
+    private String getName(String path) {
+        char[] cPath = path.toCharArray();
+        int i = cPath.length - 1;
+        while (cPath[i] != '\\') {
+            i--;
+        }
+
+        return path.substring(i + 1);
+    }
     @Override
     public String toString() {
         return "DIRECTORY\nname: " + name + "\npath: " + path.toString() + "\nfileLimit: " + fileNumberLimit + "\nfiles:" + files.toString();

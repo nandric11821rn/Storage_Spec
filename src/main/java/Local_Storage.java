@@ -38,22 +38,22 @@ public class Local_Storage extends Storage_Spec {
     }
 
     @Override
-    public boolean createStorage(Path path) throws IOException {
+    public boolean createStorage(String path) throws IOException {
         return createStorage(path, getSize(), getProhibitedExt());
     }
 
     @Override
-    public boolean createStorage(Path path, long size) throws IOException {
+    public boolean createStorage(String path, long size) throws IOException {
         return createStorage(path, size, getProhibitedExt());
     }
 
     @Override
-    public boolean createStorage(Path path, List<String> extensions) throws IOException {
+    public boolean createStorage(String path, List<String> extensions) throws IOException {
         return createStorage(path, getSize(), extensions);
     }
 
     @Override
-    public boolean createStorage(Path path, long size, List<String> extensions) throws IOException {
+    public boolean createStorage(String path, long size, List<String> extensions) throws IOException {
         File file = new File(path.toString());
         if (!file.mkdir()) {
             return false;
@@ -91,7 +91,7 @@ public class Local_Storage extends Storage_Spec {
 
     @Override
     public boolean createDirectory(String path) throws IOException {
-        return createDirectory(path, -1);
+        return createDirectory(path, size);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class Local_Storage extends Storage_Spec {
         if(absolutePath == null) return false; //stavio ovo da nam ne puca vise kada zaboravimo da izbrisemo
         File f = new File(getAbsolutePath().toString() + path.toString());
         if (f.mkdir()){
-            Directory d = new Directory(Paths.get(getAbsolutePath() + path), fileNum, new ArrayList<>());
+            Directory d = new Directory(getAbsolutePath() + path, fileNum, new ArrayList<>());
             directories.add(d);
 
             updateConfig();
@@ -113,11 +113,15 @@ public class Local_Storage extends Storage_Spec {
     public boolean createDirectory(List<Directory> directories) throws IOException {
 
         for (Directory d : directories) {
-            File f = new File(getAbsolutePath() + d.getName());
+            File f = new File(getAbsolutePath() + d.getPath());
+            if (!f.mkdir()) {
+                System.out.println("Neuspesno kreiran direktorijum " + d.getName());
+                return false;
+            }
             this.directories.add(d);
         }
-
-        return false;
+        updateConfig();
+        return true;
     }
 
     @Override
@@ -232,13 +236,13 @@ public class Local_Storage extends Storage_Spec {
                 }
             }
             s = s + "\\" + newName;
-            File rename = new File(s);
+            File rename = new File(s); //TODO: ispraviti
 
             if (f.renameTo(rename)) { //updatovanje config-a
                 for(Directory directory: directories) {
                     //System.out.println(directory.getPath().toString() + " =? " + f.getPath()+"\n");
                     if(directory.getPath().toString().equals(f.getPath())){
-                        directory.setPath(Paths.get(s));
+                        directory.setPath(s);
                         directory.setName(newName);
                         updateConfig();
                         break;
@@ -282,7 +286,7 @@ public class Local_Storage extends Storage_Spec {
                         return false;
                     }
                     if(newPath != null) {
-                        directory.setPath(newPath);
+                        //directory.setPath(newPath); // TODO: isparviti
                         updateConfig();
                         return true;
                     }
@@ -489,11 +493,11 @@ public class Local_Storage extends Storage_Spec {
     //--------------------------------------------------------------------------------Helpful:
     private String getRootPathFromAbsolute(Path path){//treba da vrati
         String s = path.toString();
-        return s.substring(getAbsolutePath().toString().length());
+        return s.substring(getAbsolutePath().length());
     }
     private Directory findParentFromDirList(File f){//pronalazi roditeljski direktorijum iz liste direktorijuma ako postoji, inace null.
         for(Directory directory: directories) {
-            String potentialParent = absolutePath + getRootPathFromAbsolute(directory.getPath());
+            String potentialParent = absolutePath + directory.getPath(); //TODO: ispraviti, ja sam doradio @Nikola
            //System.out.println("da li isti: " + potentialParent.equals(f.getParent())+ " ("+ potentialParent +" =? "+f.getParent());
            if(potentialParent.equals(f.getParent())){
                 Directory parent = new Directory();
@@ -512,7 +516,7 @@ public class Local_Storage extends Storage_Spec {
     }
 
     public boolean isEnoughSpace(File f) throws IOException {
-        if((Files.size(absolutePath)+ f.length()) > size)
+        if((Files.size(Paths.get(absolutePath))+ f.length()) > size)
             return false;
         else
             return true;
