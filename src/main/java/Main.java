@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        /*Local_Storage localStorage = new Local_Storage();
+        Local_Storage localStorage = new Local_Storage();
         localStorage.createStorage("C:\\a_test\\SK_Project");
 
         localStorage.createDirectory("\\dir1");
@@ -25,7 +25,16 @@ public class Main {
         localStorage.createFile("\\dir2\\dir3\\ftekaka.txt");
         localStorage.createDirectory("\\dir2\\dir3\\imhppy");
         localStorage.createFile("\\dir2\\dir3\\imhppy\\dtekaka.txt");
-        localStorage.createFile("\\dir2\\dir3\\imhppy\\ehpie.png");*/
+        localStorage.createFile("\\dir2\\dir3\\imhppy\\ehpie.png");
+
+        List<FileInfo> fi = localStorage.searchDirectory("\\dir2");
+
+        List<IncludeResult> criteria = new ArrayList<>();
+        criteria.add(IncludeResult.MODIFICATION_DATE);
+        criteria.add(IncludeResult.SIZE);
+
+        fi = localStorage.filterResultSet(criteria, fi);
+        System.out.println(localStorage.sortResultSet(fi,IncludeResult.NAME,false));
 
         //localStorage.delete("\\dir2\\gooef.jpg");
         //localStorage.delete("\\dir2\\dir3");
@@ -52,18 +61,18 @@ public class Main {
         System.out.println(localStorage.sortResultSet(fi, IncludeResult.NAME,false));*/
 
         //CMD TEST:
-        CmdParser cmdParser = new CmdParser();
-
-        String cmdLine = "dir1[10]>(dir2[10]*5)+dir3>dir4";
-        List<Directory> directories = cmdParser.createDirectories(new StringBuilder(), cmdLine);
-        System.out.println(directories);
-
-
-        //Remote_Storage TEST:
-        Remote_Storage remote_storage = new Remote_Storage();
-        remote_storage.createStorage("Test1");
-        remote_storage.createDirectory(directories);
-        remote_storage.createFile("\\dir1\\text.txt");
+//        CmdParser cmdParser = new CmdParser();
+//
+//        String cmdLine = "dir1[10]>(dir2[10]*5)+dir3>dir4";
+//        List<Directory> directories = cmdParser.createDirectories(new StringBuilder(), cmdLine);
+//        System.out.println(directories);
+//
+//
+//        //Remote_Storage TEST:
+//        Remote_Storage remote_storage = new Remote_Storage();
+//        remote_storage.createStorage("Test1");
+//        remote_storage.createDirectory(directories);
+//        remote_storage.createFile("\\dir1\\text.txt");
 
     }
 }

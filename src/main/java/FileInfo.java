@@ -43,7 +43,7 @@ public class FileInfo {
     @Override
     public String toString() {
 
-        String s = name + " ---------------\n";
+        String s = "[FILE:] " + name + "\n";
         if(pathFlag) s = s + "path: " + pathFromRoot + "\n";
         if(creationFlag) s = s + "created: " + creationTime.toString() + "\n";
         if(modifiedFlag) s = s + "modified: " + lastModifiedTime.toString() + "\n";

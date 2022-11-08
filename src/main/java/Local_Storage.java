@@ -99,7 +99,7 @@ public class Local_Storage extends Storage_Spec {
         if(absolutePath == null) return false; //stavio ovo da nam ne puca vise kada zaboravimo da izbrisemo
         File f = new File(getAbsolutePath().toString() + path.toString());
         if (f.mkdir()){
-            Directory d = new Directory(getAbsolutePath() + path, fileNum, new ArrayList<>());
+            Directory d = new Directory( path, fileNum, new ArrayList<>());
             directories.add(d);
 
             updateConfig();
@@ -175,7 +175,8 @@ public class Local_Storage extends Storage_Spec {
         if(f.isDirectory()){//ako je u pitanju direktorijum
            // System.out.println("name of dir to delete: " + f.getName() );
             for(Directory directory: directories) {
-                if(directory.getPath().toString().equals(f.getPath())){
+                //System.out.println("\ndel: "+ directory.getPath().equals(getRootPathFromAbsolute(Paths.get(f.getPath())))+" "+directory.getPath()+" =? "+f.getPath());
+                if(directory.getPath().equals(getRootPathFromAbsolute(Paths.get(f.getPath())))){
                     if(f.delete()) {
                         directories.remove(directory);
                         updateConfig();
@@ -216,12 +217,12 @@ public class Local_Storage extends Storage_Spec {
                 }
             }
             s = s + "\\" + newName;
-            File rename = new File(s); //TODO: ispraviti
+            File rename = new File(s);
 
             if (f.renameTo(rename)) { //updatovanje config-a
                 for(Directory directory: directories) {
                     //System.out.println(directory.getPath().toString() + " =? " + f.getPath()+"\n");
-                    if(directory.getPath().toString().equals(f.getPath())){
+                    if(directory.getPath().equals(getRootPathFromAbsolute(Paths.get(f.getPath())))){
                         directory.setPath(s);
                         directory.setName(newName);
                         updateConfig();
@@ -257,7 +258,7 @@ public class Local_Storage extends Storage_Spec {
         if(old.isDirectory()){
             for(Directory directory: directories) {
                 //System.out.println(directory.getPath().toString()+" =? "+old.getPath().toString()+"\n");
-                if(directory.getPath().toString().equals(old.getPath().toString())){
+                if(directory.getPath().equals(getRootPathFromAbsolute(Paths.get(old.getPath())))){
                     Path newPath = null;
                     try {
                        newPath = Files.move(Paths.get(getAbsolutePath()+filePath), Paths.get(getAbsolutePath()+goalDirectory+"\\"+getNameFromPathString(filePath)), StandardCopyOption.ATOMIC_MOVE);
@@ -266,7 +267,7 @@ public class Local_Storage extends Storage_Spec {
                         return false;
                     }
                     if(newPath != null) {
-                        //directory.setPath(newPath); // TODO: isparviti
+                        directory.setPath(getRootPathFromAbsolute(newPath));
                         updateConfig();
                         return true;
                     }
@@ -285,7 +286,8 @@ public class Local_Storage extends Storage_Spec {
                 parent.getFiles().remove(getNameFromPathString(filePath));
 
                 for(Directory directory: directories) {//pa da se upise u listu fajlova novog roditelja
-                    if(directory.getPath().toString().equals(getAbsolutePath()+goalDirectory)){
+                    System.out.println("equals: "+directory.getPath().toString().equals(goalDirectory)+" "+directory.getPath()+" =? "+goalDirectory);
+                    if(directory.getPath().toString().equals(goalDirectory)){
                         directory.getFiles().add(getNameFromPathString(filePath));
                         updateConfig();
                     }
@@ -477,7 +479,8 @@ public class Local_Storage extends Storage_Spec {
     }
     private Directory findParentFromDirList(File f){//pronalazi roditeljski direktorijum iz liste direktorijuma ako postoji, inace null.
         for(Directory directory: directories) {
-            String potentialParent = absolutePath + directory.getPath(); //TODO: ispraviti, ja sam doradio @Nikola
+            String potentialParent = absolutePath + directory.getPath();
+
            //System.out.println("da li isti: " + potentialParent.equals(f.getParent())+ " ("+ potentialParent +" =? "+f.getParent());
            if(potentialParent.equals(f.getParent())){
                 Directory parent = new Directory();
