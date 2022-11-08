@@ -55,8 +55,14 @@ public class Main {
 
                 case 2://napravi vise direktorijuma
                     //TODO: @Nikola - ovo je za tvoju logiku da ubacis (dir1[10]>(dir2[10]*5)+dir3>dir4 i takve stvari)
+                    CmdParser cmdParser = new CmdParser();
+                    if(local_storage.createDirectory(cmdParser.createDirectories(new StringBuilder(), reader.readLine()))) {
+                        System.out.println("\n - directories successfully created\n");
+                    }
+                    else {
+                        System.out.println("\n - invalid input\n");
+                    }
                     break;
-
                 case 3://napravi fajl
                     System.out.println("* Template: \\rootPath\\newFileName.extension\n");
                     if(local_storage.createFile(reader.readLine())) System.out.println("\n - file successfully created\n");
