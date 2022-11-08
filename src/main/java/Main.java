@@ -1,8 +1,11 @@
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import javax.xml.stream.events.Characters;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,53 +16,85 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        Local_Storage localStorage = new Local_Storage();
-        localStorage.createStorage("C:\\a_test\\SK_Project");
+    public static void main(String[] args) throws IOException {//TODO: ZA SADA KORISTICU SAMO LOKALNI, U SAMOSTALNOJ VERZIJI, ZAMENICEMO SPECIFIKACIJOM!!!
 
-        localStorage.createDirectory("\\dir1");
-        localStorage.createDirectory("\\dir2");
-        localStorage.createDirectory("\\dir2\\dir3");
-        localStorage.createFile("\\dir2\\atekst.txt");
-        localStorage.createFile("\\dir2\\sslika.png");
-        localStorage.createFile("\\dir2\\dir3\\ftekaka.txt");
-        localStorage.createDirectory("\\dir2\\dir3\\imhppy");
-        localStorage.createFile("\\dir2\\dir3\\imhppy\\dtekaka.txt");
-        localStorage.createFile("\\dir2\\dir3\\imhppy\\ehpie.png");
+        //TODO: napraviti neki StorageManager i menjanje izabrane implementaije (kao sa vezbi) kad se pretvori u izolovani projekat
 
-        List<FileInfo> fi = localStorage.searchDirectory("\\dir2");
+        //ovde ce da bude odabir implementacije, SAMO ZA SADA JE:
+        Local_Storage local_storage = new Local_Storage();
 
-        List<IncludeResult> criteria = new ArrayList<>();
-        criteria.add(IncludeResult.MODIFICATION_DATE);
-        criteria.add(IncludeResult.SIZE);
+        BufferedReader reader = new BufferedReader (new InputStreamReader(System.in));
 
-        fi = localStorage.filterResultSet(criteria, fi);
-        System.out.println(localStorage.sortResultSet(fi,IncludeResult.NAME,false));
+        while (true){
+            System.out.println("* Type location of storage creation: ");
+            if(local_storage.createStorage(reader.readLine())){ //Todo: ako neko unese bezveze tekst, stvorice ti se unutar projekta storage fajl. ispraviti da se ne moze ovo!
+                System.out.println("\n - storage successfully created\n");
+                break;
+            }
+            System.out.println("\n - invalid input\n");
+        }
 
-        //localStorage.delete("\\dir2\\gooef.jpg");
-        //localStorage.delete("\\dir2\\dir3");
-       // localStorage.renameTo("\\dir2\\dir3","Wii7");
-        //localStorage.renameTo("\\dir2","Wii");
-        //localStorage.renameTo("\\dir1","PP");
-        //localStorage.renameTo("\\dir2\\gooef.jpg", "image.jpg");
-        //if(localStorage.moveFile("\\dir2\\gooef.jpg", "\\dir1")) System.out.println("all good dir");
-        //localStorage.moveFile("\\dir2\\gooef.jpg","\\dir1");
-        //if(localStorage.download("\\dir2", "C:\\a_copyTest")) System.out.println("all good bro");
-        /*List<String> s = new ArrayList<>();
-        s.add("tekst.txt");
-        s.add("dir");
-        s.add("slika.png");
-        System.out.println(localStorage.isInDirectory("\\dir2", s));*/
-        //System.out.println(localStorage.fetchDirectory("","hpie.png"));
+        boolean exit = false;
+        while(!exit){
+            System.out.println("\n[OPTIONS]\n*0 Quit\n*1 Create single directory\n*2 Create directories using grammar\n*3 Create single file\n*4 Create multiple files" +
+                    "\n*5 Rename\n*6 Delete\n*7 Search storage\n\n");
+            int input = -1;
 
-       /* List<IncludeResult> criteria = new ArrayList<>();
-        criteria.add(IncludeResult.MODIFICATION_DATE);
-        criteria.add(IncludeResult.SIZE);
+            if((input = isInt(reader.readLine())) == -1) continue;
 
-        List<FileInfo> fi = localStorage.searchAll("");
-        fi = localStorage.filterResultSet(criteria,fi);
-        System.out.println(localStorage.sortResultSet(fi, IncludeResult.NAME,false));*/
+            switch(input){
+                case 0://izlazi
+                    exit = true;
+                    break;
 
+                case 1://napravi jedan direktorijum
+                    System.out.println("* Template: \\rootPath\\newDirectoryName\n");//TODO: @Nikola implementiraj svoju logiku za ogranicenja onako kako si mislio. ovo je samo kostur
+                    if(local_storage.createDirectory(reader.readLine())) System.out.println("\n - directory successfully created\n");
+                    else System.out.println("\n - invalid input\n");
+                    break;
+
+                case 2://napravi vise direktorijuma
+                    //TODO: @Nikola - ovo je za tvoju logiku da ubacis (dir1[10]>(dir2[10]*5)+dir3>dir4 i takve stvari)
+                    break;
+
+                case 3://napravi fajl
+                    System.out.println("* Template: \\rootPath\\newFileName.extension\n");
+                    if(local_storage.createFile(reader.readLine())) System.out.println("\n - file successfully created\n");
+                    else System.out.println("\n - invalid input\n");
+                    break;
+
+                case 4://napravi vise fajlova
+                    System.out.println("* Template: \\rootPath\\destination,fileName1,fileName2,fileName3,...\n");
+                    String[] str = reader.readLine().split(",");
+
+                    String path = str[0];
+                    ArrayList<String> names = new ArrayList<>();
+
+                    for(int i = 1; i < str.length; i++){
+                        names.add(str[i]);
+                    }
+                    if(local_storage.createFile(path, names)) System.out.println("\n - files successfully created\n");
+                    else System.out.println("\n - invalid input\n");
+
+                    break;
+                case 5://preimenuj
+                    break;
+
+                case 6://obrisi
+                    break;
+
+                case 7://pretrazi
+                    System.out.println("\n[OPTIONS]\n*0 Return\n*1 Search directory\n*2 \n\n");
+                    break;
+
+                default:
+                    System.out.println("\n - invalid request\n");
+            }
+        }
+
+
+       /* Local_Storage localStorage = new Local_Storage();
+        localStorage.createStorage("C:\\a_test\\SK_Project");*/
         //CMD TEST:
 //        CmdParser cmdParser = new CmdParser();
 //
@@ -74,5 +109,15 @@ public class Main {
 //        remote_storage.createDirectory(directories);
 //        remote_storage.createFile("\\dir1\\text.txt");
 
+    }
+    public static int isInt(String str){
+        int input;
+        try{ //u slucaju da neko unese nesto sto nije broj
+            input = Integer.valueOf(str);
+        } catch (NumberFormatException e) {
+            System.out.println("\n - invalid input\n");
+            return -1;
+        }
+        return input;
     }
 }

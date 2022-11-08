@@ -67,6 +67,8 @@ public class Local_Storage extends Storage_Spec {
         System.out.println(config.getAbsolutePath());
         if (config.createNewFile()) {
             setConfig(config);
+        }else{
+            return false; // mora ovo zbog test aplikacije
         }
         updateConfig();
         return true;
@@ -128,7 +130,7 @@ public class Local_Storage extends Storage_Spec {
     public boolean createFile(String path) throws IOException {
 
         File f = new File(absolutePath + path);
-       // System.out.println("roditelj je: " + f.getParent() + "\n\n");
+        //System.out.println("roditelj je: " + f.getParent() + "\n\n");
         //System.out.println("\nabsolute path to file:" + absolutePath + "+" + path);
         Directory parent = new Directory();
         //System.out.println("\nf.getpath: "+f.getParent()+"\n");
@@ -160,8 +162,11 @@ public class Local_Storage extends Storage_Spec {
 
     @Override
     public boolean createFile(String path, List<String> names) throws IOException { //dodavanje vise fajlova u 1 direktorijum
+        if(names.isEmpty()) return false;
+
         for (String name: names) {
             String p = path + "\\" + name;
+            System.out.println(path + "\\" + name);
             if(!createFile(p))
                 return false;
         }
@@ -286,7 +291,7 @@ public class Local_Storage extends Storage_Spec {
                 parent.getFiles().remove(getNameFromPathString(filePath));
 
                 for(Directory directory: directories) {//pa da se upise u listu fajlova novog roditelja
-                    System.out.println("equals: "+directory.getPath().toString().equals(goalDirectory)+" "+directory.getPath()+" =? "+goalDirectory);
+                    //System.out.println("equals: "+directory.getPath().toString().equals(goalDirectory)+" "+directory.getPath()+" =? "+goalDirectory);
                     if(directory.getPath().toString().equals(goalDirectory)){
                         directory.getFiles().add(getNameFromPathString(filePath));
                         updateConfig();
