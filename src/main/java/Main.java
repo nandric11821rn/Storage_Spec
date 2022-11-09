@@ -36,8 +36,14 @@ public class Main {
 
         boolean exit = false;
         while(!exit){
+
+            //================pomocne:
+            String[] arr; //za splitovanje inputa
+            String in; //za input posle odabira metode
+            //=======================
+
             System.out.println("\n[OPTIONS]\n*0 Quit\n*1 Create single directory\n*2 Create directories using grammar\n*3 Create single file\n*4 Create multiple files" +
-                    "\n*5 Rename\n*6 Delete\n*7 Search storage\n\n");
+                    "\n*5 Rename\n*6 Delete\n*7 Move file\n*8 Download file\n*9 Search storage\n\n");
             int input = -1;
 
             if((input = isInt(reader.readLine())) == -1) continue;
@@ -72,18 +78,18 @@ public class Main {
                 case 4://napravi vise fajlova
                     System.out.println("* Template: \\rootPath\\destination,fileName1,fileName2,fileName3,...\n");
 
-                    String in = reader.readLine();
+                    in = reader.readLine();
                     if(!in.contains(",")){
                         System.out.println("\n - invalid input\n");
                         continue;
                     }
-                    String[] str = in.split(",");
+                    arr = in.split(",");
 
-                    String path = str[0];
+                    String path = arr[0];
                     ArrayList<String> names = new ArrayList<>();
 
-                    for(int i = 1; i < str.length; i++){
-                        names.add(str[i]);
+                    for(int i = 1; i < arr.length; i++){
+                        names.add(arr[i]);
                     }
                     if(local_storage.createFile(path, names)) System.out.println("\n - files successfully created\n");
                     else System.out.println("\n - invalid input\n");
@@ -91,13 +97,13 @@ public class Main {
                     break;
                 case 5://preimenuj
                     System.out.println("* Template: \\rootPath\\fileName,newName\n");
-                    String s = reader.readLine();
-                    if(!s.contains(",")){
+                    in = reader.readLine();
+                    if(!in.contains(",")){
                         System.out.println("\n - invalid input\n");
                         continue;
                     }
 
-                    String[] arr = s.split(",");
+                    arr = in.split(",");
 
                     if(local_storage.renameTo(arr[0], arr[1])) System.out.println("\n - file successfully renamed\n");
                     else System.out.println("\n - invalid input\n");
@@ -110,15 +116,41 @@ public class Main {
                     else System.out.println("\n - invalid input\n");
                     break;
 
-                case 7://pretrazi
-                    System.out.println("\n[OPTIONS]\n*0 Return\n*1 Search directory\n*2 \n\n");
+                case 7://pomeri
+                    System.out.println("* Template: \\rootPath\\fileName,\\rootPath\\destinationFolder\n");
+                    in = reader.readLine();
+                    if(!in.contains(",")){
+                        System.out.println("\n - invalid input\n");
+                        continue;
+                    }
+                    arr = in.split(",");
+
+                    if(local_storage.moveFile(arr[0], arr[1])) System.out.println("\n - file successfully moved\n");
+                    else System.out.println("\n - invalid input\n");
+                    break;
+
+                case 8://preuzmi
+                    System.out.println("* Template: \\rootPath\\fileName,DestinationAbsolutePath\n");
+                    in = reader.readLine();
+                    if(!in.contains(",")){
+                        System.out.println("\n - invalid input\n");
+                        continue;
+                    }
+                    arr = in.split(",");
+
+                    if(local_storage.download(arr[0], arr[1])) System.out.println("\n - file successfully downloaded\n");
+                    else System.out.println("\n - invalid input\n");
+                    break;
+
+                case 9://pretrazi
+                    System.out.println("\n[SEARCH OPTIONS:]\n*0 return\n*1 Search directory\n*2 Search subdirectories\n*3 Search all\n*4 By extension\n*5 By substring\n" +
+                            "*6 Is file in directory\n*7 Are files in directory\n*8 Fetch directory\n*9 Modified after\n\n");
                     break;
 
                 default:
                     System.out.println("\n - invalid request\n");
             }
         }
-
 
        /* Local_Storage localStorage = new Local_Storage();
         localStorage.createStorage("C:\\a_test\\SK_Project");*/
@@ -137,6 +169,7 @@ public class Main {
 //        remote_storage.createFile("\\dir1\\text.txt");
 
     }
+
     public static int isInt(String str){ //provera pri biranju opcija
         int input;
         try{ //u slucaju da neko unese nesto sto nije broj a da treba broj

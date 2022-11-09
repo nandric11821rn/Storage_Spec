@@ -309,14 +309,24 @@ public class Local_Storage extends Storage_Spec {
 
     @Override
     public boolean download(String filepath, String goalAbsolutePath) {//kopiranje izvan skladista bez menjanja skladista
-        Path copyPath = null;
+        /*Path copyPath = null;
         try {
-            copyPath = Files.move(Paths.get(getAbsolutePath()+filepath), Paths.get(goalAbsolutePath+"\\"+getNameFromPathString(filepath)), StandardCopyOption.ATOMIC_MOVE);
+            System.out.println(getAbsolutePath()+filepath+" TO: "+goalAbsolutePath+"\\"+getNameFromPathString(filepath));
+            copyPath = Files.copy(Paths.get(getAbsolutePath()+filepath), Paths.get(goalAbsolutePath+"\\"+getNameFromPathString(filepath)), StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-        return true;
+        return true;*/
+        Path copied = Paths.get(goalAbsolutePath+"\\"+getNameFromPathString(filepath));
+        Path original = Paths.get(getAbsolutePath()+filepath);
+
+        try {
+            Files.copy(original,copied,StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            return false;
+        }
+        return  true;
     }
 
     //---------------------------------------------------------------pretrazivanje

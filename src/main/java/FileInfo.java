@@ -19,10 +19,10 @@ public class FileInfo {
     private String pathFromRoot;
     private boolean pathFlag = false;
 
-    private FileTime creationTime;
+    private FileTime creationTime; //TODO: moguce da cemo morati da promenimo zbog drajva
     private boolean creationFlag = false;
 
-    private FileTime lastModifiedTime;
+    private FileTime lastModifiedTime; //TODO: i ovo
     private boolean modifiedFlag = false;
 
     private long size;

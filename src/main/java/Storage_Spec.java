@@ -206,7 +206,7 @@ public abstract class Storage_Spec {
 
         Arrays.sort(arr, new Comparator<FileInfo>(){
             @Override
-            public int compare(FileInfo fi1, FileInfo fi2) {
+            public int compare(FileInfo fi1, FileInfo fi2) {//TODO: Bice vrv potrebne izmene
                 if(descending) {
                     return fi2.getLastModifiedTime().compareTo(fi1.getLastModifiedTime());
                 }else {
