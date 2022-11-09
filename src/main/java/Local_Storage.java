@@ -177,6 +177,8 @@ public class Local_Storage extends Storage_Spec {
     public boolean delete(String path) throws IOException{
         File f = new File(getAbsolutePath() + path);
 
+        if(!f.exists()) return false;
+
         if(f.isDirectory()){//ako je u pitanju direktorijum
            // System.out.println("name of dir to delete: " + f.getName() );
             for(Directory directory: directories) {
@@ -211,6 +213,8 @@ public class Local_Storage extends Storage_Spec {
     @Override
     public boolean renameTo(String path, String newName) throws IOException {
         File f = new File(getAbsolutePath() + path);
+
+        if (!f.exists()) return false;
 
         if(f.isDirectory()) { //preimenovanje direktorijuma (sve radi kako treba)
             String s = getAbsolutePath().toString();

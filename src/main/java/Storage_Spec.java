@@ -253,24 +253,5 @@ public abstract class Storage_Spec {
         }
         return result;
     }
-    /**
-     *      PRETRAZIVANJE SKLADISTA
-     *
-     *      prolazenje kroz sve foldere i subfoldere i ispisivanje fajlova
-     *      public static void main(String... args) throws Exception {
-     *         Path dir = Paths.get("/path/to/dir");
-     *         Files.walk(dir).forEach(path -> showFile(path.toFile()));
-     *     }
-     *
-     *     public static void showFile(File file) {
-     *         if (file.isDirectory()) {
-     *             System.out.println("Directory: " + file.getAbsolutePath());
-     *         } else {
-     *             System.out.println("File: " + file.getAbsolutePath());
-     *         }
-     *     } prolazenje kroz sve foldere i subfoldere i ispisivanje fajlova
-     *
-     */
-
 
 }

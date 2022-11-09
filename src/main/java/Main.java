@@ -47,7 +47,7 @@ public class Main {
                     exit = true;
                     break;
 
-                case 1://napravi jedan direktorijum
+                case 1://napravi jedan direktorijum//TODO: pucaju ti metode ako ima pogresan unos npr ako nije uneta '\' (tacnije metoda getname u Directory)
                     System.out.println("* Template: \\rootPath\\newDirectoryName\n");//TODO: @Nikola implementiraj svoju logiku za ogranicenja onako kako si mislio. ovo je samo kostur
                     if(local_storage.createDirectory(reader.readLine())) System.out.println("\n - directory successfully created\n");
                     else System.out.println("\n - invalid input\n");
@@ -71,7 +71,13 @@ public class Main {
 
                 case 4://napravi vise fajlova
                     System.out.println("* Template: \\rootPath\\destination,fileName1,fileName2,fileName3,...\n");
-                    String[] str = reader.readLine().split(",");
+
+                    String in = reader.readLine();
+                    if(!in.contains(",")){
+                        System.out.println("\n - invalid input\n");
+                        continue;
+                    }
+                    String[] str = in.split(",");
 
                     String path = str[0];
                     ArrayList<String> names = new ArrayList<>();
@@ -84,9 +90,24 @@ public class Main {
 
                     break;
                 case 5://preimenuj
+                    System.out.println("* Template: \\rootPath\\fileName,newName\n");
+                    String s = reader.readLine();
+                    if(!s.contains(",")){
+                        System.out.println("\n - invalid input\n");
+                        continue;
+                    }
+
+                    String[] arr = s.split(",");
+
+                    if(local_storage.renameTo(arr[0], arr[1])) System.out.println("\n - file successfully renamed\n");
+                    else System.out.println("\n - invalid input\n");
+
                     break;
 
                 case 6://obrisi
+                    System.out.println("* Template: \\rootPath\\fileName\n");
+                    if(local_storage.delete(reader.readLine())) System.out.println("\n - file successfully deleted\n");
+                    else System.out.println("\n - invalid input\n");
                     break;
 
                 case 7://pretrazi
@@ -116,9 +137,9 @@ public class Main {
 //        remote_storage.createFile("\\dir1\\text.txt");
 
     }
-    public static int isInt(String str){
+    public static int isInt(String str){ //provera pri biranju opcija
         int input;
-        try{ //u slucaju da neko unese nesto sto nije broj
+        try{ //u slucaju da neko unese nesto sto nije broj a da treba broj
             input = Integer.valueOf(str);
         } catch (NumberFormatException e) {
             System.out.println("\n - invalid input\n");
