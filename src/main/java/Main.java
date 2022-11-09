@@ -147,6 +147,8 @@ public class Main {
                     while(!back) {
                         System.out.println("\n[SEARCH OPTIONS:]\n*0 return\n*1 Search directory\n*2 Search subdirectories\n*3 Search all\n*4 By extension\n*5 By substring\n" +
                                 "*6 Is file in directory\n*7 Are files in directory\n*8 Fetch directory\n*9 Modified after\n\n");
+                        List<FileInfo> resultSet = null;
+
                         int search = -1;
                         if((search = isInt(reader.readLine())) == -1) continue;
 
@@ -157,7 +159,7 @@ public class Main {
 
                             case 1://search directory
                                 System.out.println("* Template: \\rootPath\\directoryName\n");
-                                List<FileInfo> resultSet = local_storage.searchDirectory(reader.readLine());
+                                resultSet = local_storage.searchDirectory(reader.readLine());
 
                                 if(resultSet == null){
                                     System.out.println("\n - file doesn't exist\n");
@@ -226,27 +228,74 @@ public class Main {
     }
 
     public static void dealWithResultSet(List<FileInfo> resultSet, Local_Storage storage, BufferedReader reader) throws IOException {
+        List<FileInfo> toPrint = resultSet;
         boolean flag = true;
         while(flag){
-            System.out.println("\n[RESULT OPTIONS:]\n*1 Print\n*2 Sort\n*3 Filter");
+            System.out.println("\n[RESULT OPTIONS:]\n*1 Print and return\n*2 Sort\n*3 Filter\n\n");
+            String input;
+            String[] split;
+
             int pick = -1;
             if((pick = isInt(reader.readLine())) == -1) continue;
 
             switch (pick){
                 case 1: //stampaj
                     System.out.println("\n");
-                    for(FileInfo f : resultSet){
+                    for(FileInfo f : toPrint){
                         System.out.println(f);
                     }
                     flag = false;
                     break;
 
                 case 2://sortiraj
+                    System.out.println("\n[sort by:]\n*1 Name\n*2 Size\n*3 Date\n---------\n*a ascending\n*d descending\n---------\n* Template: (a or d),(a number from 1 to 3)\nex: a,2\n");
+                    input = reader.readLine();
+                    if(!input.contains(",")){
+                        System.out.println("\n - invalid input\n");
+                        break;
+                    }
+                    split = input.split(",");
+                    boolean desc;
 
+                    if(split[0].equalsIgnoreCase("a")) desc = false;
+                    else desc = true;
+
+                    if(split[1].equals("1"))
+                        toPrint = storage.sortResultSet(toPrint, IncludeResult.NAME, desc);
+                    else if(split[1].equals("2"))
+                        toPrint = storage.sortResultSet(toPrint, IncludeResult.SIZE, desc);
+                    else if(split[1].equals("3"))
+                        toPrint = storage.sortResultSet(toPrint, IncludeResult.MODIFICATION_DATE, desc);
+                    else System.out.println("\n - invalid input\n");
+                    System.out.println("\n- sorted\n");
                     break;
 
                 case 3://filterisi
+                    System.out.println("\n[include:]\n*1 Size\n*2 Root path\n*3 Creation date\n*4 Modification date\n---------\n* Template: (1-4),(1-4),...\n");
+                    input = reader.readLine();
+                    split = input.split(",");
 
+                    if(split.length == 0){
+                        System.out.println("\n- no attributes added");
+                        continue;
+                    }
+                    List<IncludeResult> criteria = new ArrayList<>();
+                    for(String attr : split){
+                        if(attr.equals("1"))
+                            criteria.add(IncludeResult.SIZE);
+                        else if(attr.equals("2"))
+                            criteria.add(IncludeResult.ROOT_PATH);
+                        else if(attr.equals("3"))
+                            criteria.add(IncludeResult.CREATION_DATE);
+                        else if(attr.equals("4"))
+                            criteria.add(IncludeResult.MODIFICATION_DATE);
+                        else{
+                            System.out.println("\n - invalid input\n");
+                            break;
+                        }
+                    }
+                    toPrint = storage.filterResultSet(criteria,toPrint);
+                    System.out.println("\n- filtered\n");
                     break;
             }
 

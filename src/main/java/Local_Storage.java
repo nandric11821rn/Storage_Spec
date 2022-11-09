@@ -166,7 +166,7 @@ public class Local_Storage extends Storage_Spec {
 
         for (String name: names) {
             String p = path + "\\" + name;
-            System.out.println(path + "\\" + name);
+            //System.out.println(path + "\\" + name);
             if(!createFile(p))
                 return false;
         }
