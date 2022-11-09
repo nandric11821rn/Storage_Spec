@@ -142,9 +142,64 @@ public class Main {
                     else System.out.println("\n - invalid input\n");
                     break;
 
-                case 9://pretrazi
-                    System.out.println("\n[SEARCH OPTIONS:]\n*0 return\n*1 Search directory\n*2 Search subdirectories\n*3 Search all\n*4 By extension\n*5 By substring\n" +
-                            "*6 Is file in directory\n*7 Are files in directory\n*8 Fetch directory\n*9 Modified after\n\n");
+                case 9://pretrazi------------------------------------------------------
+                    boolean back = false;
+                    while(!back) {
+                        System.out.println("\n[SEARCH OPTIONS:]\n*0 return\n*1 Search directory\n*2 Search subdirectories\n*3 Search all\n*4 By extension\n*5 By substring\n" +
+                                "*6 Is file in directory\n*7 Are files in directory\n*8 Fetch directory\n*9 Modified after\n\n");
+                        int search = -1;
+                        if((search = isInt(reader.readLine())) == -1) continue;
+
+                        switch (search){
+                            case 0://back
+                                back = true;
+                                break;
+
+                            case 1://search directory
+                                System.out.println("* Template: \\rootPath\\directoryName\n");
+                                List<FileInfo> resultSet = local_storage.searchDirectory(reader.readLine());
+
+                                if(resultSet == null){
+                                    System.out.println("\n - file doesn't exist\n");
+                                    continue;
+                                }
+                                dealWithResultSet(resultSet,local_storage,reader);
+
+                                break;
+
+                            case 2: //subdirectories
+
+                                break;
+
+                            case 3://all
+
+                                break;
+
+                            case 4://extension
+
+                                break;
+
+                            case 5://substring
+
+                                break;
+
+                            case 6://isInDirectory(1)
+
+                                break;
+
+                            case 7://isInDirectory(1+)
+
+                                break;
+
+                            case 8://fetch directory
+
+                                break;
+
+                            case 9://modified after
+
+                                break;
+                        }
+                    }
                     break;
 
                 default:
@@ -168,6 +223,34 @@ public class Main {
 //        remote_storage.createDirectory(directories);
 //        remote_storage.createFile("\\dir1\\text.txt");
 
+    }
+
+    public static void dealWithResultSet(List<FileInfo> resultSet, Local_Storage storage, BufferedReader reader) throws IOException {
+        boolean flag = true;
+        while(flag){
+            System.out.println("\n[RESULT OPTIONS:]\n*1 Print\n*2 Sort\n*3 Filter");
+            int pick = -1;
+            if((pick = isInt(reader.readLine())) == -1) continue;
+
+            switch (pick){
+                case 1: //stampaj
+                    System.out.println("\n");
+                    for(FileInfo f : resultSet){
+                        System.out.println(f);
+                    }
+                    flag = false;
+                    break;
+
+                case 2://sortiraj
+
+                    break;
+
+                case 3://filterisi
+
+                    break;
+            }
+
+        }
     }
 
     public static int isInt(String str){ //provera pri biranju opcija
