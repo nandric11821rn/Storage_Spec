@@ -18,16 +18,16 @@ import java.util.stream.Stream;
 public class Main {
     public static void main(String[] args) throws IOException {//TODO: ZA SADA KORISTICU SAMO LOKALNI, U SAMOSTALNOJ VERZIJI, ZAMENICEMO SPECIFIKACIJOM!!!
 
-        //TODO: napraviti neki StorageManager i menjanje izabrane implementaije (kao sa vezbi) kad se pretvori u izolovani projekat
+        //TODO: napraviti neki StorageManager i menjanje izabrane implementacije (kao sa vezbi) kad se pretvori u izolovani projekat
 
         //ovde ce da bude odabir implementacije, SAMO ZA SADA JE:
-        Local_Storage local_storage = new Local_Storage();
+        Local_Storage storage = new Local_Storage();
 
         BufferedReader reader = new BufferedReader (new InputStreamReader(System.in));
 
         while (true){
             System.out.println("* Type location of storage creation: ");
-            if(local_storage.createStorage(reader.readLine())){ //Todo: ako neko unese bezveze tekst, stvorice ti se unutar projekta storage fajl. ispraviti da se ne moze ovo!
+            if(storage.createStorage(reader.readLine())){ //Todo: ako neko unese bezveze tekst, stvorice ti se unutar projekta storage fajl. ispraviti da se ne moze ovo!
                 System.out.println("\n - storage successfully created\n");
                 break;
             }
@@ -55,14 +55,14 @@ public class Main {
 
                 case 1://napravi jedan direktorijum//TODO: pucaju ti metode ako ima pogresan unos npr ako nije uneta '\' (tacnije metoda getname u Directory)
                     System.out.println("* Template: \\rootPath\\newDirectoryName\n");//TODO: @Nikola implementiraj svoju logiku za ogranicenja onako kako si mislio. ovo je samo kostur
-                    if(local_storage.createDirectory(reader.readLine())) System.out.println("\n - directory successfully created\n");
+                    if(storage.createDirectory(reader.readLine())) System.out.println("\n - directory successfully created\n");
                     else System.out.println("\n - invalid input\n");
                     break;
 
                 case 2://napravi vise direktorijuma
                     //TODO: @Nikola - ovo je za tvoju logiku da ubacis (dir1[10]>(dir2[10]*5)+dir3>dir4 i takve stvari)
                     CmdParser cmdParser = new CmdParser();
-                    if(local_storage.createDirectory(cmdParser.createDirectories(new StringBuilder(), reader.readLine()))) {
+                    if(storage.createDirectory(cmdParser.createDirectories(new StringBuilder(), reader.readLine()))) {
                         System.out.println("\n - directories successfully created\n");
                     }
                     else {
@@ -71,7 +71,7 @@ public class Main {
                     break;
                 case 3://napravi fajl
                     System.out.println("* Template: \\rootPath\\newFileName.extension\n");
-                    if(local_storage.createFile(reader.readLine())) System.out.println("\n - file successfully created\n");
+                    if(storage.createFile(reader.readLine())) System.out.println("\n - file successfully created\n");
                     else System.out.println("\n - invalid input\n");
                     break;
 
@@ -91,7 +91,7 @@ public class Main {
                     for(int i = 1; i < arr.length; i++){
                         names.add(arr[i]);
                     }
-                    if(local_storage.createFile(path, names)) System.out.println("\n - files successfully created\n");
+                    if(storage.createFile(path, names)) System.out.println("\n - files successfully created\n");
                     else System.out.println("\n - invalid input\n");
 
                     break;
@@ -105,14 +105,14 @@ public class Main {
 
                     arr = in.split(",");
 
-                    if(local_storage.renameTo(arr[0], arr[1])) System.out.println("\n - file successfully renamed\n");
+                    if(storage.renameTo(arr[0], arr[1])) System.out.println("\n - file successfully renamed\n");
                     else System.out.println("\n - invalid input\n");
 
                     break;
 
                 case 6://obrisi
                     System.out.println("* Template: \\rootPath\\fileName\n");
-                    if(local_storage.delete(reader.readLine())) System.out.println("\n - file successfully deleted\n");
+                    if(storage.delete(reader.readLine())) System.out.println("\n - file successfully deleted\n");
                     else System.out.println("\n - invalid input\n");
                     break;
 
@@ -125,7 +125,7 @@ public class Main {
                     }
                     arr = in.split(",");
 
-                    if(local_storage.moveFile(arr[0], arr[1])) System.out.println("\n - file successfully moved\n");
+                    if(storage.moveFile(arr[0], arr[1])) System.out.println("\n - file successfully moved\n");
                     else System.out.println("\n - invalid input\n");
                     break;
 
@@ -138,16 +138,18 @@ public class Main {
                     }
                     arr = in.split(",");
 
-                    if(local_storage.download(arr[0], arr[1])) System.out.println("\n - file successfully downloaded\n");
+                    if(storage.download(arr[0], arr[1])) System.out.println("\n - file successfully downloaded\n");
                     else System.out.println("\n - invalid input\n");
                     break;
 
                 case 9://pretrazi------------------------------------------------------
                     boolean back = false;
                     while(!back) {
-                        System.out.println("\n[SEARCH OPTIONS:]\n*0 return\n*1 Search directory\n*2 Search subdirectories\n*3 Search all\n*4 By extension\n*5 By substring\n" +
+                        System.out.println("\n[SEARCH OPTIONS:]\n*0 return\n*1 Search directory\n*2 Search subdirectories\n*3 Search to directory's deepest level\n*4 By extension\n*5 By substring\n" +
                                 "*6 Is file in directory\n*7 Are files in directory\n*8 Fetch directory\n*9 Modified after\n\n");
                         List<FileInfo> resultSet = null;
+                        String[] split;
+                        String str;
 
                         int search = -1;
                         if((search = isInt(reader.readLine())) == -1) continue;
@@ -159,46 +161,109 @@ public class Main {
 
                             case 1://search directory
                                 System.out.println("* Template: \\rootPath\\directoryName\n");
-                                resultSet = local_storage.searchDirectory(reader.readLine());
+                                resultSet = storage.searchDirectory(reader.readLine());
 
                                 if(resultSet == null){
                                     System.out.println("\n - file doesn't exist\n");
                                     continue;
                                 }
-                                dealWithResultSet(resultSet,local_storage,reader);
+                                dealWithResultSet(resultSet,storage,reader);
 
                                 break;
 
                             case 2: //subdirectories
+                                System.out.println("* Template: \\rootPath\\directoryName\n");//TODO: testiraj odavde pa na dole! vvv
+                                resultSet = storage.searchSubdirectories(reader.readLine());
 
+                                if(resultSet == null){
+                                    System.out.println("\n - file doesn't exist\n");
+                                    continue;
+                                }
+                                dealWithResultSet(resultSet,storage,reader);
                                 break;
 
                             case 3://all
+                                System.out.println("* Template: \\rootPath\\directoryName\n");
+                                resultSet = storage.searchAll(reader.readLine());
 
+                                if(resultSet == null){
+                                    System.out.println("\n - file doesn't exist\n");
+                                    continue;
+                                }
+                                dealWithResultSet(resultSet,storage,reader);
                                 break;
 
                             case 4://extension
+                                System.out.println("* Template: .(extension)");
+                                resultSet = storage.searchByExtension(reader.readLine());
 
+                                if(resultSet == null){
+                                    System.out.println("\n - no files with that extension found\n");
+                                    continue;
+                                }
+                                dealWithResultSet(resultSet,storage,reader);
                                 break;
 
                             case 5://substring
+                                System.out.println("* Template: Any substring");
+                                resultSet = storage.searchBySubstring(reader.readLine());
 
+                                if(resultSet == null){
+                                    System.out.println("\n - no files with that substring found\n");
+                                    continue;
+                                }
+                                dealWithResultSet(resultSet,storage,reader);
                                 break;
 
                             case 6://isInDirectory(1)
+                                System.out.println("* Template: \\rootPath\\directoryName,filename\n");
+                                str = reader.readLine();
+                                if(!str.contains(",")){
+                                    System.out.println("\n - invalid input\n");
+                                    break;
+                                }
+                                split = str.split(",");
+                                if(storage.isInDirectory(split[0],split[1]))
+                                    System.out.println("\n - file " + split[1] + " is in directory " + split[0] + ".\n");
+                                else
+                                    System.out.println("\n - file " + split[1] + " is not in directory " + split[0] + ".\n");
 
                                 break;
 
                             case 7://isInDirectory(1+)
+                                System.out.println("* Template: \\rootPath\\directoryName,filename1,filename2,...\n");
+                                str = reader.readLine();
+                                if(!str.contains(",")){
+                                    System.out.println("\n - invalid input\n");
+                                    break;
+                                }
+                                split = str.split(",");
 
+                                List<String> files = new ArrayList<>();
+                                for(int i = 1; i < split.length; i++){
+                                    files.add(split[i]);
+                                }
+                                if(storage.isInDirectory(split[0],files))
+                                    System.out.println("\n - files are in directory " + split[0] + ".\n");
+                                else
+                                    System.out.println("\n - files are not in directory " + split[0] + ".\n");
                                 break;
 
                             case 8://fetch directory
+                                System.out.println("* Template: filename\n");
+                                str = reader.readLine();
+                                FileInfo parent;
+
+                                parent = storage.fetchDirectory("", str);
+                                if(parent == null)
+                                    System.out.println("\n - file "+ str +" has not been found\n");
+                                else
+                                    System.out.println("\n - file "+ str +" is in directory:\n"+parent);
 
                                 break;
 
                             case 9://modified after
-
+                                System.out.println("\n OUT OF SERVICE... LOL\n(kada se budemo dogovorili oko klase za vreme, stavicu ovu funkciju)");
                                 break;
                         }
                     }
