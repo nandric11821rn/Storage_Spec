@@ -172,7 +172,7 @@ public class Main {
                                 break;
 
                             case 2: //subdirectories
-                                System.out.println("* Template: \\rootPath\\directoryName\n");//TODO: testiraj odavde pa na dole! vvv
+                                System.out.println("* Template: \\rootPath\\directoryName\n");
                                 resultSet = storage.searchSubdirectories(reader.readLine());
 
                                 if(resultSet == null){
@@ -246,7 +246,7 @@ public class Main {
                                 if(storage.isInDirectory(split[0],files))
                                     System.out.println("\n - files are in directory " + split[0] + ".\n");
                                 else
-                                    System.out.println("\n - files are not in directory " + split[0] + ".\n");
+                                    System.out.println("\n - not all files are in directory " + split[0] + ".\n");
                                 break;
 
                             case 8://fetch directory

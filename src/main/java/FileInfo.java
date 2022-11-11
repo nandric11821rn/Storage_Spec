@@ -19,7 +19,7 @@ public class FileInfo {
     private String pathFromRoot;
     private boolean pathFlag = false;
 
-    private FileTime creationTime; //TODO: moguce da cemo morati da promenimo zbog drajva
+    private FileTime creationTime; //TODO: moguce da cemo morati da promenimo zbog drajva  (SimpleDateFormat)
     private boolean creationFlag = false;
 
     private FileTime lastModifiedTime; //TODO: i ovo
