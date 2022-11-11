@@ -287,7 +287,8 @@ public class Remote_Storage extends Storage_Spec{
 
     @Override
     public List<FileInfo> searchDirectory(String path) throws IOException {
-        return null;
+        return null; //TODO: samo da znas, promenio sam FileInfo (nisu datumi vise u FileTime formatu nego u Date) da bi bio kompatibilan sa drajvom.
+        //TODO: baci pogled na lokalno skladiste da vidis kko sam ja uradio wrapper funkciju za konstruktor FileInfo-a, mozda ti da ideju za ovde :)
     }
 
     @Override
@@ -326,7 +327,7 @@ public class Remote_Storage extends Storage_Spec{
     }
 
     @Override
-    public List<FileInfo> TouchedAfterInDirectory(String path, LocalDateTime dateTime) throws IOException {
+    public List<FileInfo> touchedAfterInDirectory(String path, Date dateTime) throws IOException {
         return null;
     }
 }

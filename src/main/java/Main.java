@@ -9,8 +9,12 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -263,7 +267,31 @@ public class Main {
                                 break;
 
                             case 9://modified after
-                                System.out.println("\n OUT OF SERVICE... LOL\n(kada se budemo dogovorili oko klase za vreme, stavicu ovu funkciju)");
+                                System.out.println("* Template: \\rootPath\\directoryName,dd/mm/yyyy-hh:mm:ss\n");
+
+                                str = reader.readLine();
+                                if(!str.contains(",")){
+                                    System.out.println("\n - invalid input\n");
+                                    break;
+                                }
+
+                                split = str.split(",");
+
+                                DateFormat df = new SimpleDateFormat("dd/mm/yyyy-hh:mm:ss");
+                                Date dt = null;
+                                try {
+                                    dt = df.parse(split[1]);
+                                } catch (ParseException e) {
+                                    System.out.println("\n - invalid date format\n");
+                                    break;
+                                }
+                                resultSet = storage.touchedAfterInDirectory(split[0], dt);
+
+                                if(resultSet == null)
+                                    System.out.println("\n - no such files in directory " + split[0] + ".\n");
+
+                                dealWithResultSet(resultSet, storage, reader);
+
                                 break;
                         }
                     }

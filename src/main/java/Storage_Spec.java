@@ -141,7 +141,7 @@ public abstract class Storage_Spec {
     public abstract FileInfo fetchDirectory(String emptyString, String FileName) throws IOException;//vratiti u kom folderu se nalazi fajl sa određenim zadatim imenom
 
     //public abstract sort();//obezbediti zadavanje različitih kriterijuma sortiranja, npr po nazivu,datumu kreiranje/modifikacije, rastuće/opadajuće
-    public abstract List<FileInfo> TouchedAfterInDirectory(String path, LocalDateTime dateTime) throws IOException;//fajlove koji su kreirani/modifikovani u nekom periodu, u nekom dir
+    public abstract List<FileInfo> touchedAfterInDirectory(String path, Date dateTime) throws IOException;//fajlove koji su kreirani/modifikovani u nekom periodu, u nekom dir
 
     //---------------------------------------------------------------------Implemented in specification:
     public List<FileInfo> filterResultSet(List<IncludeResult> Criteria, List<FileInfo> fileList){//omogućiti filtriranje podataka koji se prikazuju za fajlove rezultata
@@ -206,7 +206,7 @@ public abstract class Storage_Spec {
 
         Arrays.sort(arr, new Comparator<FileInfo>(){
             @Override
-            public int compare(FileInfo fi1, FileInfo fi2) {//TODO: Bice vrv potrebne izmene
+            public int compare(FileInfo fi1, FileInfo fi2) {//izmenjeno je -> sad je DATE u fileInfo!
                 if(descending) {
                     return fi2.getLastModifiedTime().compareTo(fi1.getLastModifiedTime());
                 }else {

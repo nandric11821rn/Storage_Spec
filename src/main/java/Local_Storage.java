@@ -6,7 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -343,7 +347,7 @@ public class Local_Storage extends Storage_Spec {
         File[] fileList = dir.listFiles();
         ArrayList<FileInfo> abtFiles = new ArrayList<>();
         for(File file : fileList) {
-            abtFiles.add(new FileInfo(file, getRootPathFromAbsolute(Paths.get(file.getAbsolutePath()))));
+            abtFiles.add(getFileInfo(file, getRootPathFromAbsolute(Paths.get(file.getAbsolutePath()))));
         }
         return abtFiles;
     }
@@ -361,7 +365,7 @@ public class Local_Storage extends Storage_Spec {
                 File subDir = new File(file.getAbsolutePath());
                 File[] subFileList = subDir.listFiles();
                 for(File subFile : subFileList){
-                    abtFiles.add(new FileInfo(subFile, getRootPathFromAbsolute(Paths.get(subFile.getAbsolutePath()))));
+                    abtFiles.add(getFileInfo(subFile, getRootPathFromAbsolute(Paths.get(subFile.getAbsolutePath()))));
                 }
             }
         }
@@ -380,7 +384,7 @@ public class Local_Storage extends Storage_Spec {
         for(File file : fileList){
             //System.out.println(file.getName());
             if(!file.isDirectory())//ako nije dir, dodaj ga u niz
-                abtFiles.add(new FileInfo(file, getRootPathFromAbsolute(Paths.get(file.getAbsolutePath()))));
+                abtFiles.add(getFileInfo(file, getRootPathFromAbsolute(Paths.get(file.getAbsolutePath()))));
             else//ako jeste, rekurzivan poziv da ide najdublje sto moze
                 abtFiles.addAll(searchAll(getRootPathFromAbsolute(Paths.get(file.getPath()))));
         }
@@ -448,7 +452,7 @@ public class Local_Storage extends Storage_Spec {
             //System.out.println("\n"+ f.getName() + " =? " + fileName);
             if(f.isDirectory()) {
                 if (f.getName().equals(fileName)){
-                    returnFile = new FileInfo(dir, getRootPathFromAbsolute(Paths.get(dir.getAbsolutePath())));
+                    returnFile = getFileInfo(dir, getRootPathFromAbsolute(Paths.get(dir.getAbsolutePath())));
                     return returnFile;
                 }
                 returnFile = fetchDirectory(getRootPathFromAbsolute(Paths.get(f.getAbsolutePath())), fileName);
@@ -456,7 +460,7 @@ public class Local_Storage extends Storage_Spec {
                     return returnFile;
             }
             if (f.getName().equals(fileName)) {
-                returnFile = new FileInfo(dir, getRootPathFromAbsolute(Paths.get(dir.getAbsolutePath())));
+                returnFile = getFileInfo(dir, getRootPathFromAbsolute(Paths.get(dir.getAbsolutePath())));
                 return returnFile;
             }
         }
@@ -464,7 +468,7 @@ public class Local_Storage extends Storage_Spec {
     }
 //todo: touchedAfterInDirectory nije jos testirana metoda
     @Override
-    public List<FileInfo> TouchedAfterInDirectory(String path, LocalDateTime dateTime) throws IOException { //kreirani/modifikovani u periodu-posle zadatog vremena (samo 1 nivo od prosledjenog direktorijuma)
+    public List<FileInfo> touchedAfterInDirectory(String path, Date dateTime) throws IOException { //kreirani/modifikovani u periodu-posle zadatog vremena (samo 1 nivo od prosledjenog direktorijuma)
         //ja cu samo modifikacije gledati jer ako napravljen fajl, i nije menjan, creationdate=modificationdate.
         List<FileInfo> abtFiles = new ArrayList<>();
         abtFiles = searchDirectory(path); //svi fajlovi unutar unetog direktorijuma
@@ -473,25 +477,47 @@ public class Local_Storage extends Storage_Spec {
         ArrayList<FileInfo> resultSet = new ArrayList<>();
 
         for(FileInfo f : abtFiles){
-            LocalDateTime dt = LocalDateTime.ofInstant(f.getLastModifiedTime().toInstant(), ZoneId.systemDefault());
-            if(dt.isAfter(dateTime)){
+           // LocalDateTime dt = LocalDateTime.ofInstant(f.getLastModifiedTime().toInstant(), ZoneId.systemDefault());
+            Date fDate = f.getLastModifiedTime();
+            if(fDate.after(dateTime)){
                 resultSet.add(f);
             }
         }
         return resultSet;
     }
-//TODO:     naredne 2 metode da se naprave u specifikaciji, ne ovde.
-    //@Override
-    //public List<FileInfo> FilterResultSet(List<Enum> Criteria, List<FileInfo> fileList) {
-     //   return null;
-    //}
-
-    //@Override
-    //public List<FileInfo> sortResultSet(List<FileInfo> fileList, IncludeResult Criteria, boolean descending) {
-    //    return null;
-    //}
 
     //--------------------------------------------------------------------------------Helpful:
+    private FileInfo getFileInfo(File file, String pathFromRoot){ //Wrapper funkcija za FileInfo konstruktor (zbog razlicitog pristupa metapodacima)
+        String name = file.getName();
+        Path abslutePth = Paths.get(file.getAbsolutePath()); //za svaki slucaj sto ne bismo imali
+        String pthFrmRt = pathFromRoot;
+
+        BasicFileAttributes attr = null;
+        try {
+            attr = Files.readAttributes(abslutePth, BasicFileAttributes.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        long fsize = attr.size();
+
+        DateFormat df = new SimpleDateFormat("dd/mm/yyyy-hh:mm:ss");//odavde - za dobijanje Date formata datuma
+
+        String c = df.format(attr.creationTime().toMillis());
+        Date created = null;
+        String m = df.format(attr.lastModifiedTime().toMillis());
+        Date modified = null;
+
+        try {
+            created = df.parse(c);
+            modified = df.parse(m);
+
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new FileInfo(name, pthFrmRt, abslutePth, created, modified, fsize);
+    }
+
     private String getRootPathFromAbsolute(Path path){//treba da vrati
         String s = path.toString();
         return s.substring(getAbsolutePath().length());
