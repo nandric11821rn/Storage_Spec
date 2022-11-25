@@ -1,4 +1,3 @@
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.xml.stream.events.Characters;
@@ -22,10 +21,26 @@ import java.util.stream.Stream;
 public class Main {
     public static void main(String[] args) throws IOException {//TODO: ZA SADA KORISTICU SAMO LOKALNI, U SAMOSTALNOJ VERZIJI, ZAMENICEMO SPECIFIKACIJOM!!!
 
+//        Remote_Storage remote_storage = new Remote_Storage();
+//        remote_storage.createStorage("testRemote");
+//        remote_storage.createDirectory("\\dir1");
+//        remote_storage.createFile("\\dir1\\a.txt");
+//        remote_storage.createFile("\\dir1\\b.txt");
+//        remote_storage.createFile("\\dir1\\c.txt");
+//        remote_storage.createFile("\\dir1\\d.txt");
+//        remote_storage.createFile("\\dir1\\e.txt");
+//        List<FileInfo> rs = remote_storage.searchDirectory("\\dir1");
+//        List<IncludeResult> crt = new ArrayList<>();
+//        crt.add(IncludeResult.SIZE);
+//        crt.add(IncludeResult.ROOT_PATH);
+//        List<FileInfo> print = remote_storage.filterResultSet(crt,rs);
+//        System.out.println(print);
         //TODO: napraviti neki StorageManager i menjanje izabrane implementacije (kao sa vezbi) kad se pretvori u izolovani projekat
 
+
+
         //ovde ce da bude odabir implementacije, SAMO ZA SADA JE:
-        Local_Storage storage = new Local_Storage();
+        Remote_Storage storage = new Remote_Storage();
 
         BufferedReader reader = new BufferedReader (new InputStreamReader(System.in));
 
@@ -320,7 +335,7 @@ public class Main {
 
     }
 
-    public static void dealWithResultSet(List<FileInfo> resultSet, Local_Storage storage, BufferedReader reader) throws IOException {
+    public static void dealWithResultSet(List<FileInfo> resultSet, Storage_Spec storage, BufferedReader reader) throws IOException {
         List<FileInfo> toPrint = resultSet;
         boolean flag = true;
         while(flag){

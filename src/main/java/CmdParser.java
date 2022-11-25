@@ -78,6 +78,7 @@ public class CmdParser {
             cmdLine = cmdLine.substring(endIndex + 1);
             endIndex = spliterIndex(cmdLine);
         }
+        System.out.println(directories);
         return directories;
     }
 }

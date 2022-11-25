@@ -31,6 +31,17 @@ public class Directory {
 
         return path.substring(i + 1);
     }
+
+    public void setName(String name) {
+        char[] cPath = path.toCharArray();
+        int i = cPath.length - 1;
+        while (cPath[i] != '\\') {
+            i--;
+        }
+
+        this.name = name;
+        this.path = path.substring(0, i) + name;
+    }
     @Override
     public String toString() {
         return "DIRECTORY\nname: " + name + "\npath: " + path.toString() + "\nfileLimit: " + fileNumberLimit + "\nfiles:" + files.toString();

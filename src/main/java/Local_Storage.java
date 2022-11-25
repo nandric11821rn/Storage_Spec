@@ -236,8 +236,8 @@ public class Local_Storage extends Storage_Spec {
                 for(Directory directory: directories) {
                     //System.out.println(directory.getPath().toString() + " =? " + f.getPath()+"\n");
                     if(directory.getPath().equals(getRootPathFromAbsolute(Paths.get(f.getPath())))){
-                        directory.setPath(s);
                         directory.setName(newName);
+                        directory.setPath(s);
                         updateConfig();
                         break;
                     }

@@ -1,3 +1,4 @@
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -110,7 +111,7 @@ public abstract class Storage_Spec {
     public abstract boolean delete(String path) throws IOException;
     public abstract boolean renameTo(String path, String newName) throws IOException;
     public abstract boolean moveFile(String filePath, String goalDirectory) throws IOException; //unutar skladista
-    public abstract boolean download(String filepath, String goalAbsolutePath); //lokalno / izvan skladista
+    public abstract boolean download(String filepath, String goalAbsolutePath) throws GoogleJsonResponseException; //lokalno / izvan skladista
 
     /**
      *      PRETRAZIVANJE SKLADISTA
@@ -254,4 +255,8 @@ public abstract class Storage_Spec {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "Absolute path: " + absolutePath + "\nConfig: " + config.getAbsolutePath() + "\nDirectories: " + directories;
+    }
 }
